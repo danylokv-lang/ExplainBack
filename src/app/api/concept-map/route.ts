@@ -1,0 +1,42 @@
+import { NextResponse } from "next/server";
+import { callStructured } from "@/lib/anthropic";
+import { requireUser } from "@/lib/auth";
+import { failure, readJson } from "@/lib/http";
+import { CONCEPT_MAP_SCHEMA } from "@/lib/schemas";
+import { CONCEPT_MAP_SYSTEM, conceptMapUser } from "@/lib/prompts";
+import { getMap, saveMap } from "@/lib/store";
+import { sanitizeMap } from "@/lib/validate";
+
+export const runtime = "nodejs";
+export const maxDuration = 60;
+
+export async function POST(request: Request) {
+  try {
+    await requireUser();
+
+    const body = await readJson<{ topic?: unknown }>(request);
+    const topic = typeof body?.topic === "string" ? body.topic.trim() : "";
+
+    if (topic.length < 2 || topic.length > 120) {
+      return NextResponse.json(
+        { error: "A topic has to be 2 to 120 characters." },
+        { status: 400 },
+      );
+    }
+
+    const cached = getMap(topic);
+    if (cached) return NextResponse.json({ map: cached });
+
+    const raw = await callStructured<unknown>({
+      system: CONCEPT_MAP_SYSTEM,
+      user: conceptMapUser(topic),
+      schema: CONCEPT_MAP_SCHEMA,
+      maxTokens: 4000,
+    });
+    const map = sanitizeMap(raw, topic);
+    saveMap(map);
+    return NextResponse.json({ map });
+  } catch (err) {
+    return failure(err, "Could not build the concept map.");
+  }
+}

@@ -1,0 +1,318 @@
+{
+  "topics": [
+    {
+      "id": "cellular-respiration",
+      "topic": "Cellular Respiration",
+      "domain": "Biology",
+      "brief": "Explain how the chemical energy in glucose becomes ATP step by step, and what oxygen is actually doing in that chain.",
+      "sample": "Cellular respiration is the process where the cell gets energy from glucose. Glucose goes into the mitochondria, and the Krebs cycle happens there, which produces a lot of ATP. Mitochondria are called the powerhouse of the cell because they are the ones that make ATP. Oxygen is needed because without oxygen the cell can't respire. The more mitochondria a cell has, the more energy it has.",
+      "nodes": [
+        {
+          "id": "glucose",
+          "label": "Glucose",
+          "definition": "The fuel molecule whose bonds hold the stored chemical energy.",
+          "mechanism": "The energy in glucose is released in small steps across dozens of reactions rather than in one burst — otherwise the cell would simply cook itself.",
+          "misconception": "Glucose is converted into ATP directly, like swapping one coin for another.",
+          "tier": "core"
+        },
+        {
+          "id": "glycolysis",
+          "label": "Glycolysis",
+          "definition": "The splitting of glucose into two molecules of pyruvate.",
+          "mechanism": "It happens in the cytoplasm, not inside the mitochondrion, and needs no oxygen — which is exactly why it still runs when oxygen is gone.",
+          "misconception": "Glycolysis takes place inside the mitochondrion along with the rest of respiration.",
+          "tier": "core"
+        },
+        {
+          "id": "mitochondria",
+          "label": "Mitochondria",
+          "definition": "Organelles whose inner membrane is folded into cristae.",
+          "mechanism": "What matters is not the presence of the organelle but the area of that inner membrane: the complexes that build the proton gradient sit on it.",
+          "misconception": "A mitochondrion is a powerhouse that generates energy by itself, however many you add.",
+          "tier": "supporting"
+        },
+        {
+          "id": "krebs",
+          "label": "Krebs Cycle",
+          "definition": "The cyclic oxidation of acetyl-CoA in the mitochondrial matrix.",
+          "mechanism": "Its main product is not ATP but reduced carriers, NADH and FADH2 — that is, electrons stripped off the fuel.",
+          "misconception": "The Krebs cycle is where the bulk of the ATP is synthesised.",
+          "tier": "core"
+        },
+        {
+          "id": "etc",
+          "label": "Electron Transport Chain",
+          "definition": "A chain of protein complexes in the inner mitochondrial membrane.",
+          "mechanism": "Electrons drop from complex to complex down an energy staircase, and at every step the released energy is spent pumping protons across the membrane.",
+          "misconception": "The chain simply hands energy over to ATP with nothing in between.",
+          "tier": "core"
+        },
+        {
+          "id": "oxygen",
+          "label": "Oxygen",
+          "definition": "The final electron acceptor of the respiratory chain.",
+          "mechanism": "Oxygen gives the cell nothing — it takes the spent electrons away at the end of the chain; without it the chain backs up and stalls, and the Krebs cycle stalls with it.",
+          "misconception": "Oxygen is consumed as fuel, or is itself the source of the energy.",
+          "tier": "core"
+        },
+        {
+          "id": "gradient",
+          "label": "Proton Gradient",
+          "definition": "A difference in proton concentration across the inner membrane.",
+          "mechanism": "The gradient itself, not any carrier molecule, is the intermediate form of the stored energy: energy is briefly held as an imbalance of concentration.",
+          "misconception": "There is no intermediate form of energy between the chain and ATP.",
+          "tier": "core"
+        },
+        {
+          "id": "atp",
+          "label": "ATP",
+          "definition": "The universal energy currency of the cell.",
+          "mechanism": "ATP synthase works like a turbine: protons flowing back into the matrix physically rotate it and force it to stitch ADP to phosphate.",
+          "misconception": "ATP appears as a chemical product of oxidation, with no protons moving anywhere.",
+          "tier": "core"
+        }
+      ],
+      "edges": [
+        { "from": "glucose", "to": "glycolysis", "relation": "enables", "label": "supplies the fuel to split" },
+        { "from": "glycolysis", "to": "krebs", "relation": "produces", "label": "pyruvate enters the matrix" },
+        { "from": "mitochondria", "to": "krebs", "relation": "enables", "label": "matrix hosts the reactions" },
+        { "from": "mitochondria", "to": "etc", "relation": "enables", "label": "inner membrane carries complexes" },
+        { "from": "krebs", "to": "etc", "relation": "produces", "label": "NADH delivers electrons" },
+        { "from": "oxygen", "to": "etc", "relation": "requires", "label": "takes electrons at the end" },
+        { "from": "etc", "to": "gradient", "relation": "causes", "label": "pumps protons across" },
+        { "from": "gradient", "to": "atp", "relation": "causes", "label": "proton flow spins the synthase" }
+      ]
+    },
+    {
+      "id": "recursion",
+      "topic": "Recursion in Programming",
+      "domain": "Computer Science",
+      "brief": "Explain why a recursive function terminates at all, and what is happening in memory while it runs.",
+      "sample": "Recursion is when a function calls itself. For example factorial: the function multiplies the number by the factorial of the number minus one. For recursion to work you have to write a base case, otherwise you get an error. Recursion is always slower than a loop because every call has overhead. The call stack is needed to store the calls.",
+      "nodes": [
+        {
+          "id": "self-call",
+          "label": "Self Call",
+          "definition": "A function invoking itself from inside its own body.",
+          "mechanism": "Calling itself only means anything when the argument handed to the other copy is different — the same argument gives you an infinite repeat, not a solution.",
+          "misconception": "Recursion is just a function that repeats, with no requirement on the argument.",
+          "tier": "core"
+        },
+        {
+          "id": "reduction",
+          "label": "Problem Reduction",
+          "definition": "Each successive call receives an input closer to the simplest one.",
+          "mechanism": "Termination is guaranteed not by having a base case but by the input moving monotonically towards it.",
+          "misconception": "Writing a base case is enough to make recursion terminate.",
+          "tier": "core"
+        },
+        {
+          "id": "base-case",
+          "label": "Base Case",
+          "definition": "The condition under which the function returns without calling again.",
+          "mechanism": "It is the only place where the chain stops growing and the first finished answer appears — the answer the whole return journey is built from.",
+          "misconception": "The base case is a formal guard at the top, there so you don't get an error.",
+          "tier": "core"
+        },
+        {
+          "id": "call-stack",
+          "label": "Call Stack",
+          "definition": "The structure holding a frame for every active call.",
+          "mechanism": "Each call pushes its own frame with its own local variables, so the copies never overwrite each other's data while they wait their turn.",
+          "misconception": "All the calls work on the same variables, just one after another.",
+          "tier": "core"
+        },
+        {
+          "id": "unwinding",
+          "label": "Unwinding",
+          "definition": "The return journey: results travel from the deepest call back to the first.",
+          "mechanism": "The computation actually happens on the way up, not on the way down: until the base case fires, no call has anything to return.",
+          "misconception": "The answer is built during the descent and returning is a technicality.",
+          "tier": "core"
+        },
+        {
+          "id": "stack-overflow",
+          "label": "Stack Overflow",
+          "definition": "A crash from exhausting the memory reserved for frames.",
+          "mechanism": "It is not a syntax error but a physical consequence: frames accumulate faster than they are released, because the return journey never began.",
+          "misconception": "Stack overflow is a random interpreter error.",
+          "tier": "supporting"
+        },
+        {
+          "id": "trust",
+          "label": "Inductive Trust",
+          "definition": "Assuming the call on the smaller input already returns the right answer.",
+          "mechanism": "You can only write recursion by not unrolling it in your head: a correct base case plus a correct step is all induction needs.",
+          "misconception": "To understand recursion you have to trace every level of nesting mentally.",
+          "tier": "supporting"
+        }
+      ],
+      "edges": [
+        { "from": "trust", "to": "self-call", "relation": "enables", "label": "licenses not unrolling it" },
+        { "from": "self-call", "to": "call-stack", "relation": "causes", "label": "a new frame per call" },
+        { "from": "reduction", "to": "base-case", "relation": "enables", "label": "input reaches the boundary" },
+        { "from": "base-case", "to": "unwinding", "relation": "causes", "label": "first answer without a call" },
+        { "from": "call-stack", "to": "unwinding", "relation": "enables", "label": "frames return in reverse" },
+        { "from": "self-call", "to": "stack-overflow", "relation": "causes", "label": "an unbounded chain grows" },
+        { "from": "call-stack", "to": "stack-overflow", "relation": "causes", "label": "frames exhaust memory" }
+      ]
+    },
+    {
+      "id": "ohms-law",
+      "topic": "Ohm's Law",
+      "domain": "Physics",
+      "brief": "Explain which quantity in Ohm's law is the cause, which the effect, which a property of the conductor — and where the law stops holding.",
+      "sample": "Ohm's law says current equals voltage divided by resistance. So the bigger the voltage, the bigger the current. Resistance depends on how much voltage is in the circuit: if the voltage is high, the resistance is higher too. Ohm's law works for any conductor. Current is voltage flowing through the wires.",
+      "nodes": [
+        {
+          "id": "voltage",
+          "label": "Voltage",
+          "definition": "The difference in electric potential between two points.",
+          "mechanism": "Voltage is the cause of motion, not the motion itself: it sits across the terminals of a battery even when no charge is going anywhere.",
+          "misconception": "Voltage is the strength of the current, or the current itself.",
+          "tier": "core"
+        },
+        {
+          "id": "current",
+          "label": "Current",
+          "definition": "The charge passing through a cross-section per second.",
+          "mechanism": "Current is an effect: it exists only where there is both a cause and a closed path, and it is the same at every point along a series section.",
+          "misconception": "Current is used up along the way, so less of it arrives at the end.",
+          "tier": "core"
+        },
+        {
+          "id": "resistance",
+          "label": "Resistance",
+          "definition": "A conductor's opposition to the movement of charge.",
+          "mechanism": "Resistance is a property of the conductor itself — material, length, cross-section, temperature — and does not depend on the voltage you apply to it.",
+          "misconception": "Resistance changes because you changed the voltage or the current.",
+          "tier": "core"
+        },
+        {
+          "id": "circuit",
+          "label": "Closed Circuit",
+          "definition": "An unbroken path for charge from one terminal to the other.",
+          "mechanism": "Without a closed path the voltage is still there but no current flows — which is why an open switch stops the whole circuit without removing the source.",
+          "misconception": "Current appears simply because a battery is present.",
+          "tier": "supporting"
+        },
+        {
+          "id": "ohms-relation",
+          "label": "The Relation I = V/R",
+          "definition": "The quantitative link between the three quantities.",
+          "mechanism": "The formula does not say what physically depends on what: two quantities are set (the source voltage and the conductor's resistance) and the third follows — which is why rearranging it does not rearrange the physics.",
+          "misconception": "Since R = V/I, resistance physically depends on voltage and current.",
+          "tier": "core"
+        },
+        {
+          "id": "linearity",
+          "label": "Limits of Linearity",
+          "definition": "The conditions under which Ohm's law holds at all.",
+          "mechanism": "It holds only for ohmic conductors at constant temperature; a diode, a filament lamp or an electrolyte gives a curved characteristic instead.",
+          "misconception": "Ohm's law works for any component in any circuit.",
+          "tier": "core"
+        },
+        {
+          "id": "heating",
+          "label": "Joule Heating",
+          "definition": "Heat released as current passes through a conductor.",
+          "mechanism": "Current heats the conductor, hot metal resists more, and more resistance cuts the current — a feedback loop, and the reason the characteristic stops being a straight line.",
+          "misconception": "Heating is a side effect that leaves resistance alone.",
+          "tier": "supporting"
+        }
+      ],
+      "edges": [
+        { "from": "circuit", "to": "current", "relation": "requires", "label": "a closed path for charge" },
+        { "from": "voltage", "to": "ohms-relation", "relation": "requires", "label": "the cause, set by the source" },
+        { "from": "resistance", "to": "ohms-relation", "relation": "requires", "label": "a property of the conductor" },
+        { "from": "ohms-relation", "to": "current", "relation": "produces", "label": "fixes how much current flows" },
+        { "from": "linearity", "to": "ohms-relation", "relation": "requires", "label": "ohmic conductors only" },
+        { "from": "current", "to": "heating", "relation": "causes", "label": "the work done heats metal" },
+        { "from": "heating", "to": "resistance", "relation": "causes", "label": "hot metal resists more" }
+      ]
+    },
+    {
+      "id": "supply-and-demand",
+      "topic": "Supply and Demand",
+      "domain": "Economics",
+      "brief": "Explain why the curves slope the way they do, what equilibrium actually is, and what a price cap does that lowering a price does not.",
+      "sample": "Supply and demand is the basic law of economics. When demand goes up the price goes up, and when supply goes up the price goes down. The point where the two curves cross is the equilibrium price, which is the fair price for the good. If the government sets a price cap, the price is lower, so people can afford the good more easily. Supply and demand always determines prices in any market.",
+      "nodes": [
+        {
+          "id": "willingness-to-pay",
+          "label": "Willingness to Pay",
+          "definition": "The highest price a given buyer would still accept.",
+          "mechanism": "The demand curve slopes down because buyers are lined up in order of their reservation price, so each lower price brings in the next buyer — not because people generically prefer things cheap.",
+          "misconception": "Demand slopes down simply because everyone likes lower prices.",
+          "tier": "core"
+        },
+        {
+          "id": "opportunity-cost",
+          "label": "Opportunity Cost",
+          "definition": "The value of the next-best use of the same resources.",
+          "mechanism": "The supply curve slopes up because each additional unit is made by whoever's next-best alternative is more valuable, so a higher price is needed to pull them in.",
+          "misconception": "Supply slopes up because sellers simply want more money.",
+          "tier": "core"
+        },
+        {
+          "id": "demand-curve",
+          "label": "Demand",
+          "definition": "The whole schedule of quantities buyers would take at each price.",
+          "mechanism": "Demand is a schedule, not a number: a change in the good's own price moves you along that schedule and changes nothing about the schedule itself.",
+          "misconception": "\"Demand went up\" and \"people bought more because it got cheaper\" are the same statement.",
+          "tier": "core"
+        },
+        {
+          "id": "supply-curve",
+          "label": "Supply",
+          "definition": "The whole schedule of quantities sellers would offer at each price.",
+          "mechanism": "Only things other than the good's own price — input costs, technology, the number of sellers, expectations — move the schedule itself.",
+          "misconception": "Supply rises whenever the price rises.",
+          "tier": "core"
+        },
+        {
+          "id": "shift-vs-move",
+          "label": "Shift vs Movement",
+          "definition": "The distinction between moving along a curve and moving the curve.",
+          "mechanism": "The good's own price moves you along a curve; everything else shifts the whole curve — and confusing the two produces the circular claim that price rises because price rose.",
+          "misconception": "Any change in quantity bought counts as a change in demand.",
+          "tier": "core"
+        },
+        {
+          "id": "equilibrium",
+          "label": "Equilibrium Price",
+          "definition": "The price at which quantity offered equals quantity demanded.",
+          "mechanism": "Equilibrium is not where the lines were drawn to meet: it is the only price at which nobody is left holding an unmade trade, so nothing pushes the price further.",
+          "misconception": "The equilibrium price is the fair or correct price for the good.",
+          "tier": "core"
+        },
+        {
+          "id": "shortage-surplus",
+          "label": "Shortage and Surplus",
+          "definition": "The gap between quantity demanded and quantity supplied away from equilibrium.",
+          "mechanism": "Away from equilibrium the short side rations the market: below the equilibrium price the quantity actually traded is set by supply, however much buyers want.",
+          "misconception": "A shortage means the good ran out, rather than that trade is capped by the short side.",
+          "tier": "supporting"
+        },
+        {
+          "id": "price-control",
+          "label": "Price Controls",
+          "definition": "A legal ceiling or floor on the price of a good.",
+          "mechanism": "A binding ceiling does not lower the cost of obtaining the good; it changes who pays and in what currency — queues, quality cuts, waiting lists and side payments take over the rationing.",
+          "misconception": "A price cap simply makes the good cheaper for everyone who wants it.",
+          "tier": "core"
+        }
+      ],
+      "edges": [
+        { "from": "willingness-to-pay", "to": "demand-curve", "relation": "causes", "label": "orders buyers by reservation price" },
+        { "from": "opportunity-cost", "to": "supply-curve", "relation": "causes", "label": "orders sellers by next-best use" },
+        { "from": "demand-curve", "to": "equilibrium", "relation": "requires", "label": "one blade of the scissors" },
+        { "from": "supply-curve", "to": "equilibrium", "relation": "requires", "label": "the other blade" },
+        { "from": "shift-vs-move", "to": "equilibrium", "relation": "causes", "label": "only shifts move the crossing" },
+        { "from": "equilibrium", "to": "shortage-surplus", "relation": "causes", "label": "prices away from it open a gap" },
+        { "from": "price-control", "to": "shortage-surplus", "relation": "causes", "label": "a binding cap forces a gap" },
+        { "from": "shortage-surplus", "to": "equilibrium", "relation": "causes", "label": "unmade trades push price back" }
+      ]
+    }
+  ]
+}
