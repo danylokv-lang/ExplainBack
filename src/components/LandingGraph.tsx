@@ -30,7 +30,7 @@ export function LandingGraph({
         {selectedNode && (
           <div className="anim-rise mt-5 border-t border-rule pt-5">
             <p className="label">{selectedNode.label} — what should have been said</p>
-            <p className="mt-2 font-display text-base leading-relaxed text-ink">
+            <p className="prose-measure mt-1.5 text-[1.0625rem] leading-relaxed text-ink">
               {selectedNode.mechanism}
             </p>
           </div>
@@ -44,17 +44,17 @@ export function LandingGraph({
             type="button"
             aria-pressed={activeGapId === gap.id}
             onClick={() => setActiveGapId(activeGapId === gap.id ? null : gap.id)}
-            className={`border px-3 py-1.5 text-xs transition-colors duration-130 ${
+            className={`border px-3.5 py-2 text-sm transition-colors duration-130 ${
               activeGapId === gap.id
                 ? "border-bad bg-bad-bg text-ink"
-                : "border-rule text-ink-2 hover:border-rule-2 hover:text-ink"
+                : "border-rule-2 text-ink-2 hover:border-ink-3 hover:text-ink"
             }`}
           >
             {gap.title}
           </button>
         ))}
       </div>
-      <p className="label mt-3">Select a gap to light up the nodes it breaks</p>
+      <p className="mt-3 text-sm text-ink-3">Select a gap to light up the concepts it breaks.</p>
     </div>
   );
 }

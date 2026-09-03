@@ -12,22 +12,20 @@ export default async function MapPage({ params }: { params: Promise<{ slug: stri
   if (!map) notFound();
 
   return (
-    <div className="space-y-8 py-10">
+    <div className="space-y-9 py-12">
       <div>
-        <Link href="/app/maps" className="label hover:text-ink">
+        <Link href="/app/maps" className="text-[0.9375rem] text-ink-2 hover:text-ink">
           ← Map library
         </Link>
-        <h1 className="mt-5 text-4xl leading-tight">{map.topic}</h1>
-        <p className="mt-3 max-w-2xl leading-relaxed text-ink-2">{map.brief}</p>
+        <h1 className="display mt-6 text-4xl">{map.topic}</h1>
+        <p className="prose-measure mt-4 text-lg leading-relaxed text-ink-2">{map.brief}</p>
         <Link
           href={`/app/practice?topic=${encodeURIComponent(map.topic)}`}
-          className="btn btn-primary mt-6"
+          className="btn btn-primary mt-7"
         >
-          Explain this topic
+          Explain This Topic
         </Link>
       </div>
-
-      <div className="ruler" />
 
       <MapViewer map={map} />
     </div>

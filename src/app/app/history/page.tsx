@@ -11,21 +11,21 @@ export default async function HistoryPage() {
   const runs = listRuns(user.id);
 
   return (
-    <div className="space-y-8 py-10">
+    <div className="space-y-9 py-12">
       <header>
         <p className="label">History</p>
-        <h1 className="mt-3 text-4xl leading-tight">Everything you have explained</h1>
-        <p className="mt-3 max-w-xl leading-relaxed text-ink-2">
-          Each session keeps your original wording alongside the diagnosis, so you can see
-          what you actually wrote rather than what you remember writing.
+        <h1 className="display mt-2 text-4xl">Everything You Have Explained</h1>
+        <p className="prose-measure mt-4 text-lg leading-relaxed text-ink-2">
+          Each session keeps your original wording next to the diagnosis, so you can see
+          what you wrote rather than what you remember writing.
         </p>
       </header>
 
       {runs.length === 0 ? (
         <div className="panel p-6">
-          <p className="text-sm text-ink-2">No sessions yet.</p>
-          <Link href="/app/practice" className="btn btn-primary mt-4">
-            Start your first
+          <p className="leading-relaxed text-ink-2">No sessions yet.</p>
+          <Link href="/app/practice" className="btn btn-primary mt-5">
+            Start Your First
           </Link>
         </div>
       ) : (
@@ -36,16 +36,16 @@ export default async function HistoryPage() {
               <li key={run.id}>
                 <Link
                   href={`/app/history/${run.id}`}
-                  className="block px-5 py-4 transition-colors duration-130 hover:bg-raised"
+                  className="block px-5 py-5 transition-colors duration-130 hover:bg-raised"
                 >
                   <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
-                    <span className="font-display text-xl text-ink">{run.topic}</span>
-                    <span className="label">{formatDate(run.createdAt)}</span>
-                    <span className="label ml-auto">
+                    <span className="text-xl font-medium text-ink">{run.topic}</span>
+                    <span className="text-sm text-ink-3">{formatDate(run.createdAt)}</span>
+                    <span className="ml-auto text-sm text-ink-3">
                       {run.attempts} {plural(run.attempts, "attempt")}
                     </span>
                   </div>
-                  <div className="mt-2 flex flex-wrap items-center gap-x-5 gap-y-1 text-sm tabular-nums text-ink-2">
+                  <div className="mt-2 flex flex-wrap items-center gap-x-6 gap-y-1 tabular-nums text-ink-2">
                     <span>Coverage {run.lastCoverage}%</span>
                     <span>
                       Depth {run.lastDepth}%

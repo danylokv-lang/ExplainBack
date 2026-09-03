@@ -3,6 +3,13 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { Wordmark } from "@/components/Wordmark";
 import { currentUser } from "@/lib/auth";
 
+const STEPS = [
+  ["01", "You explain the topic from memory, in your own words."],
+  ["02", "It gets checked against a reference map of the mechanism."],
+  ["03", "Gaps come back sorted, each quoting a sentence you wrote."],
+  ["04", "A few questions, then you explain it again."],
+];
+
 export default async function AuthLayout({ children }: { children: React.ReactNode }) {
   if (await currentUser()) redirect("/app");
 
@@ -13,27 +20,22 @@ export default async function AuthLayout({ children }: { children: React.ReactNo
           <Wordmark />
           <ThemeToggle />
         </div>
-        <main className="mx-auto flex w-full max-w-sm flex-1 flex-col justify-center py-14">
+        <main className="mx-auto flex w-full max-w-sm flex-1 flex-col justify-center py-16">
           {children}
         </main>
       </div>
 
       {/* The pitch, restated for someone standing at the door. */}
-      <aside className="hidden border-l border-rule bg-surface px-10 py-16 lg:flex lg:flex-col lg:justify-center">
-        <p className="label">The Feynman loop</p>
-        <blockquote className="mt-6 max-w-md font-display text-3xl leading-[1.25] text-ink">
-          A topic feels clear right up until you have to explain it. ExplainBack is the
-          part where you have to explain it.
+      <aside className="hidden border-l border-rule bg-surface px-12 py-16 lg:flex lg:flex-col lg:justify-center">
+        <p className="text-sm text-ink-3">The Feynman loop</p>
+        <blockquote className="display mt-6 max-w-md text-3xl leading-[1.25] text-ink">
+          A topic feels clear right up until you have to explain it. ExplainBack is the part
+          where you have to explain it.
         </blockquote>
-        <ol className="mt-10 max-w-md space-y-4 border-t border-rule pt-8">
-          {[
-            ["01", "You explain the topic from memory, in your own words."],
-            ["02", "It is compared against a reference map of the mechanism."],
-            ["03", "Gaps come back classified, each quoting your own sentence."],
-            ["04", "Socratic questions, then you explain it again."],
-          ].map(([code, text]) => (
-            <li key={code} className="flex gap-4 text-sm leading-relaxed text-ink-2">
-              <span className="font-mono text-xs text-ink-3">{code}</span>
+        <ol className="mt-12 max-w-md space-y-5 border-t border-rule pt-9">
+          {STEPS.map(([code, text]) => (
+            <li key={code} className="flex gap-4 leading-relaxed text-ink-2">
+              <span className="code shrink-0 text-ink-3">{code}</span>
               {text}
             </li>
           ))}

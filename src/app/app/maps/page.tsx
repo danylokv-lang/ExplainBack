@@ -12,35 +12,32 @@ export default async function MapsPage() {
   const generated = listGeneratedMaps().filter((map) => !presetSlugs.has(map.slug));
 
   return (
-    <div className="space-y-10 py-10">
+    <div className="space-y-12 py-12">
       <header>
         <p className="label">Map library</p>
-        <h1 className="mt-3 text-4xl leading-tight">Reference concept maps</h1>
-        <p className="mt-3 max-w-2xl leading-relaxed text-ink-2">
+        <h1 className="display mt-2 text-4xl">Reference Concept Maps</h1>
+        <p className="prose-measure mt-4 text-lg leading-relaxed text-ink-2">
           Each map is the load-bearing skeleton of a topic: five to eight concepts and the
-          causal links between them. Every node carries a mechanism marker — the thing
-          somebody who genuinely understands it cannot help saying — which is exactly what
-          the diagnosis checks your text against.
+          causal links between them. Every concept records what someone who genuinely
+          understands it would have to say — that is what your text gets checked against.
         </p>
       </header>
 
       <section aria-labelledby="curated-heading">
-        <h2 id="curated-heading" className="label">
+        <h2 id="curated-heading" className="display text-2xl">
           Curated
         </h2>
-        <ul className="mt-4 grid gap-3 sm:grid-cols-2">
+        <ul className="mt-5 grid gap-4 sm:grid-cols-2">
           {PRESET_TOPICS.map((preset) => (
             <li key={preset.id}>
               <Link
                 href={`/app/maps/${slugify(preset.topic)}`}
-                className="panel group flex h-full flex-col p-5 transition-colors duration-130 hover:border-rule-2 hover:bg-raised"
+                className="panel flex h-full flex-col p-6 transition-colors duration-130 hover:border-rule-2 hover:bg-raised"
               >
-                <span className="label">{preset.domain}</span>
-                <span className="mt-3 font-display text-2xl leading-snug text-ink">
-                  {preset.topic}
-                </span>
-                <span className="mt-3 text-sm leading-relaxed text-ink-2">{preset.brief}</span>
-                <span className="label mt-5 border-t border-rule pt-3 tabular-nums">
+                <span className="text-sm text-ink-3">{preset.domain}</span>
+                <span className="display mt-2 text-2xl text-ink">{preset.topic}</span>
+                <span className="mt-3 leading-relaxed text-ink-2">{preset.brief}</span>
+                <span className="mt-6 border-t border-rule pt-4 text-sm tabular-nums text-ink-3">
                   {preset.nodeCount} concepts · {preset.edgeCount} links
                 </span>
               </Link>
@@ -51,13 +48,13 @@ export default async function MapsPage() {
 
       {generated.length > 0 && (
         <section aria-labelledby="generated-heading">
-          <h2 id="generated-heading" className="label">
-            Generated on demand
+          <h2 id="generated-heading" className="display text-2xl">
+            Generated on Demand
           </h2>
-          <ul className="mt-4 flex flex-wrap gap-2">
+          <ul className="mt-5 flex flex-wrap gap-2.5">
             {generated.map((map) => (
               <li key={map.slug}>
-                <Link href={`/app/maps/${map.slug}`} className="btn btn-ghost px-3 py-1.5 text-xs">
+                <Link href={`/app/maps/${map.slug}`} className="btn btn-ghost px-4 py-2.5 text-sm">
                   {map.topic}
                 </Link>
               </li>

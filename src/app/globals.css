@@ -3,13 +3,19 @@
 /*
   ExplainBack visual system.
 
-  One rule governs colour: the interface itself is achromatic — paper, ink and
-  hairlines. Chroma is reserved for diagnosis, so a green node or an amber bar
-  always means something. Nothing is decorative.
+  Two rules hold it together.
+
+  Legibility first: body copy sits at 16px with a 1.65 line height, secondary
+  text never drops below 15px, and every text colour clears WCAG AA against its
+  own background. The display serif is reserved for headings at 28px and above,
+  where its thin strokes are an asset rather than a tax on the reader.
+
+  Colour means something: the interface itself is paper, ink and hairlines, so
+  a green node or an amber bar is always a diagnosis and never decoration.
 */
 
 @theme {
-  --font-display: var(--font-instrument), Georgia, serif;
+  --font-display: var(--font-instrument), Georgia, "Times New Roman", serif;
   --font-sans: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-plex-mono), ui-monospace, SFMono-Regular, monospace;
 
@@ -34,87 +40,85 @@
   --color-void-bg: var(--c-void-bg);
 }
 
+/*
+  Contrast ratios against their own background are noted so future edits do not
+  quietly reintroduce grey-on-grey.
+*/
 :root {
   color-scheme: light;
 
-  --c-bg: #f3f1ec;
+  --c-bg: #f4f2ed;
   --c-surface: #fbfaf7;
   --c-raised: #ffffff;
-  --c-sunken: #e6e2d8;
-  --c-ink: #15150f;
-  --c-ink-2: #55524a;
-  --c-ink-3: #8a8579;
-  --c-rule: #d8d3c6;
-  --c-rule-2: #c3bcaa;
-  --c-accent: #103a32;
-  --c-accent-ink: #f7f6f1;
+  --c-sunken: #e5e1d6;
+  --c-ink: #17170f; /* 15.9:1 */
+  --c-ink-2: #45423a; /* 9.4:1  — secondary prose */
+  --c-ink-3: #67635a; /* 5.6:1  — captions, still AA at 14px */
+  --c-rule: #d3cec0;
+  --c-rule-2: #b3ad9c;
+  --c-accent: #123a31;
+  --c-accent-ink: #f8f7f3;
 
-  --c-ok: #2c6a4c;
-  --c-ok-bg: #e2ebe3;
-  --c-warn: #9e6c12;
-  --c-warn-bg: #f2e8d2;
-  --c-bad: #a63a26;
-  --c-bad-bg: #f2dfd9;
-  --c-void: #8d8776;
-  --c-void-bg: #e9e5da;
-
-  --c-grid: rgba(21, 21, 15, 0.03);
+  --c-ok: #1f6042; /* 6.1:1 */
+  --c-ok-bg: #dfe9e0;
+  --c-warn: #86590a; /* 5.4:1 */
+  --c-warn-bg: #f2e6cd;
+  --c-bad: #9a3020; /* 6.6:1 */
+  --c-bad-bg: #f3ded7;
+  --c-void: #6b665a; /* 5.4:1 */
+  --c-void-bg: #e7e3d7;
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     color-scheme: dark;
 
-    --c-bg: #121210;
-    --c-surface: #1a1a17;
-    --c-raised: #21211d;
-    --c-sunken: #2a2a25;
-    --c-ink: #f0eee6;
-    --c-ink-2: #b2ada0;
-    --c-ink-3: #807b6e;
-    --c-rule: #32322c;
-    --c-rule-2: #45443c;
-    --c-accent: #8ecdb2;
-    --c-accent-ink: #10201b;
+    --c-bg: #131311;
+    --c-surface: #1c1c18;
+    --c-raised: #23231e;
+    --c-sunken: #2d2d27;
+    --c-ink: #f3f1e9; /* 15.4:1 */
+    --c-ink-2: #c6c2b5; /* 9.6:1 */
+    --c-ink-3: #969184; /* 5.4:1 */
+    --c-rule: #34342d;
+    --c-rule-2: #4c4b42;
+    --c-accent: #9ad4b8;
+    --c-accent-ink: #0f2019;
 
-    --c-ok: #7cc396;
-    --c-ok-bg: #1a2b21;
-    --c-warn: #d5a44b;
-    --c-warn-bg: #2e2618;
-    --c-bad: #e08064;
-    --c-bad-bg: #33201a;
-    --c-void: #7e7a6d;
-    --c-void-bg: #24241f;
-
-    --c-grid: rgba(240, 238, 230, 0.035);
+    --c-ok: #8ccfa5; /* 9.7:1 */
+    --c-ok-bg: #1b2c22;
+    --c-warn: #e0b25c; /* 9.9:1 */
+    --c-warn-bg: #302719;
+    --c-bad: #ef9277; /* 8.4:1 */
+    --c-bad-bg: #35211b;
+    --c-void: #969184;
+    --c-void-bg: #262620;
   }
 }
 
 :root[data-theme="dark"] {
   color-scheme: dark;
 
-  --c-bg: #121210;
-  --c-surface: #1a1a17;
-  --c-raised: #21211d;
-  --c-sunken: #2a2a25;
-  --c-ink: #f0eee6;
-  --c-ink-2: #b2ada0;
-  --c-ink-3: #807b6e;
-  --c-rule: #32322c;
-  --c-rule-2: #45443c;
-  --c-accent: #8ecdb2;
-  --c-accent-ink: #10201b;
+  --c-bg: #131311;
+  --c-surface: #1c1c18;
+  --c-raised: #23231e;
+  --c-sunken: #2d2d27;
+  --c-ink: #f3f1e9;
+  --c-ink-2: #c6c2b5;
+  --c-ink-3: #969184;
+  --c-rule: #34342d;
+  --c-rule-2: #4c4b42;
+  --c-accent: #9ad4b8;
+  --c-accent-ink: #0f2019;
 
-  --c-ok: #7cc396;
-  --c-ok-bg: #1a2b21;
-  --c-warn: #d5a44b;
-  --c-warn-bg: #2e2618;
-  --c-bad: #e08064;
-  --c-bad-bg: #33201a;
-  --c-void: #7e7a6d;
-  --c-void-bg: #24241f;
-
-  --c-grid: rgba(240, 238, 230, 0.035);
+  --c-ok: #8ccfa5;
+  --c-ok-bg: #1b2c22;
+  --c-warn: #e0b25c;
+  --c-warn-bg: #302719;
+  --c-bad: #ef9277;
+  --c-bad-bg: #35211b;
+  --c-void: #969184;
+  --c-void-bg: #262620;
 }
 
 @layer base {
@@ -123,14 +127,14 @@
   }
 
   body {
+    /* Flat paper. A grid texture behind running text is noise, not character. */
     background-color: var(--c-bg);
-    background-image:
-      linear-gradient(to right, var(--c-grid) 1px, transparent 1px),
-      linear-gradient(to bottom, var(--c-grid) 1px, transparent 1px);
-    background-size: 26px 26px;
     color: var(--c-ink);
     font-family: var(--font-sans);
+    font-size: 1rem;
+    line-height: 1.65;
     font-synthesis-weight: none;
+    -webkit-font-smoothing: antialiased;
     touch-action: manipulation;
   }
 
@@ -145,11 +149,21 @@
 
   h1,
   h2,
-  h3 {
+  h3,
+  h4 {
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  /* Display serif only where it is set large enough to stay comfortable. */
+  .display {
     font-family: var(--font-display);
     font-weight: 400;
-    letter-spacing: -0.01em;
-    text-wrap: balance;
+    letter-spacing: -0.015em;
+    line-height: 1.1;
   }
 
   [id] {
@@ -158,14 +172,30 @@
 }
 
 @layer components {
-  /* Technical caption: field names, codes, counters */
+  /*
+    Field label. Sentence case in the interface face at 13px — the old 11px
+    uppercase mono in a light grey was the least readable thing on the page.
+  */
   .label {
-    font-family: var(--font-mono);
-    font-size: 0.6875rem;
-    line-height: 1.4;
-    letter-spacing: 0.11em;
-    text-transform: uppercase;
+    display: block;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    line-height: 1.5;
+    letter-spacing: 0.005em;
     color: var(--c-ink-3);
+  }
+
+  /* Short codes and counters only — never a sentence. */
+  .code {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.04em;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Comfortable measure for running text. */
+  .prose-measure {
+    max-width: 62ch;
   }
 
   .panel {
@@ -173,31 +203,15 @@
     border: 1px solid var(--c-rule);
   }
 
-  /*
-    Section marker: a hairline that carries measuring ticks. Used instead of a
-    plain <hr> so structural breaks read as instrument chrome, not decoration.
-  */
-  .ruler {
-    height: 9px;
-    border-top: 1px solid var(--c-rule);
-    background-image: linear-gradient(
-      to right,
-      var(--c-rule) 0 1px,
-      transparent 1px 100%
-    );
-    background-size: 13px 5px;
-    background-repeat: repeat-x;
-  }
-
   .btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
-    font-size: 0.875rem;
+    font-size: 0.9375rem;
     font-weight: 500;
-    letter-spacing: 0.005em;
-    padding: 0.6875rem 1.125rem;
+    line-height: 1.2;
+    padding: 0.75rem 1.25rem;
     border: 1px solid transparent;
     transition-property: background-color, color, border-color, opacity;
     transition-duration: 130ms;
@@ -209,7 +223,7 @@
     color: var(--c-accent-ink);
   }
   .btn-primary:hover:not(:disabled) {
-    opacity: 0.86;
+    opacity: 0.88;
   }
   .btn-primary:disabled {
     background: var(--c-sunken);
@@ -219,13 +233,12 @@
 
   .btn-ghost {
     background: transparent;
-    color: var(--c-ink-2);
-    border-color: var(--c-rule);
+    color: var(--c-ink);
+    border-color: var(--c-rule-2);
   }
   .btn-ghost:hover:not(:disabled) {
     background: var(--c-surface);
-    border-color: var(--c-rule-2);
-    color: var(--c-ink);
+    border-color: var(--c-ink-3);
   }
   .btn-ghost:disabled {
     opacity: 0.5;
@@ -235,16 +248,17 @@
   .field {
     width: 100%;
     background: var(--c-surface);
-    border: 1px solid var(--c-rule);
-    padding: 0.6875rem 0.875rem;
-    font-size: 0.9375rem;
+    border: 1px solid var(--c-rule-2);
+    padding: 0.75rem 0.875rem;
+    font-size: 1rem;
+    line-height: 1.5;
     color: var(--c-ink);
   }
   .field::placeholder {
     color: var(--c-ink-3);
   }
   .field:focus {
-    border-color: var(--c-rule-2);
+    border-color: var(--c-ink-3);
   }
 
   @keyframes rec {

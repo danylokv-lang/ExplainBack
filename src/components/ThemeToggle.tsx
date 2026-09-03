@@ -54,8 +54,8 @@ export function ThemeToggle() {
             aria-label={option.label}
             title={option.label}
             onClick={() => choose(option.value)}
-            className={`px-2 py-1 text-xs leading-none transition-colors duration-130 ${
-              active ? "bg-ink text-bg" : "text-ink-3 hover:text-ink"
+            className={`px-2.5 py-1.5 text-sm leading-none transition-colors duration-130 ${
+              active ? "bg-ink text-bg" : "text-ink-2 hover:text-ink"
             }`}
           >
             <span aria-hidden="true">{option.glyph}</span>

@@ -23,23 +23,21 @@ export function MapViewer({ map }: { map: ConceptMap }) {
 
       <ol className="divide-y divide-rule border border-rule bg-surface">
         {map.nodes.map((node, index) => (
-          <li key={node.id} id={node.id} className="p-5 sm:p-6">
+          <li key={node.id} id={node.id} className="p-5 sm:p-7">
             <div className="flex flex-wrap items-baseline gap-3">
-              <span className="font-display text-2xl leading-none tabular-nums text-ink-3">
-                {String(index + 1).padStart(2, "0")}
-              </span>
-              <h3 className="font-display text-2xl leading-tight">{node.label}</h3>
-              <span className="label ml-auto">{node.tier}</span>
+              <span className="code text-ink-3">{String(index + 1).padStart(2, "0")}</span>
+              <h3 className="display text-2xl">{node.label}</h3>
+              <span className="ml-auto text-sm text-ink-3">{node.tier}</span>
             </div>
-            <p className="mt-2 text-sm leading-relaxed text-ink-2">{node.definition}</p>
+            <p className="prose-measure mt-2 leading-relaxed text-ink-2">{node.definition}</p>
 
-            <p className="label mt-4">The mechanism</p>
-            <p className="mt-1 font-display text-base leading-relaxed text-ink">
+            <p className="label mt-5">What someone who understands would say</p>
+            <p className="prose-measure mt-1 text-[1.0625rem] leading-relaxed text-ink">
               {node.mechanism}
             </p>
 
-            <p className="label mt-4 text-warn">The usual wrong model</p>
-            <p className="mt-1 text-sm leading-relaxed text-ink-2">{node.misconception}</p>
+            <p className="label mt-5 text-warn">The usual wrong model</p>
+            <p className="prose-measure mt-1 leading-relaxed text-ink-2">{node.misconception}</p>
           </li>
         ))}
       </ol>

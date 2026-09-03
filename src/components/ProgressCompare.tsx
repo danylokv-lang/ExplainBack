@@ -15,13 +15,13 @@ function Delta({ label, from, to }: { label: string; from: number; to: number })
   return (
     <div>
       <p className="label">{label}</p>
-      <p className="mt-1 flex items-baseline gap-2 font-display text-3xl tabular-nums text-ink">
-        <span className="text-ink-3">{from}%</span>
-        <span aria-hidden="true" className="text-lg text-ink-3">
+      <p className="mt-1 flex items-baseline gap-2 tabular-nums">
+        <span className="display text-2xl text-ink-3">{from}%</span>
+        <span aria-hidden="true" className="text-ink-3">
           →
         </span>
-        <span>{to}%</span>
-        <span className={`font-sans text-sm ${tone}`}>
+        <span className="display text-3xl text-ink">{to}%</span>
+        <span className={`text-[0.9375rem] font-medium ${tone}`}>
           {delta > 0 ? "+" : ""}
           {delta}
         </span>
@@ -39,38 +39,40 @@ export function ProgressCompare({ before, after }: Props) {
   return (
     <section
       aria-labelledby="compare-heading"
-      className="panel border-l-2 border-l-accent p-5 sm:p-6"
+      className="panel border-l-[3px] border-l-accent p-5 sm:p-6"
     >
-      <p className="label">Attempt {before.index} → attempt {after.index}</p>
-      <h2 id="compare-heading" className="mt-2 text-3xl leading-tight">
+      <p className="label">
+        Attempt {before.index} → attempt {after.index}
+      </p>
+      <h2 id="compare-heading" className="display mt-2 text-3xl">
         {total === 0
-          ? "Attempt comparison"
-          : `${resolved.length} of ${total} ${plural(total, "gap")} closed`}
+          ? "Attempt Comparison"
+          : `${resolved.length} of ${total} ${plural(total, "Gap")} Closed`}
       </h2>
 
-      <div className="mt-5 grid gap-5 sm:grid-cols-2">
+      <div className="mt-6 grid gap-6 sm:grid-cols-2">
         <Delta label="Map coverage" from={before.diagnosis.coverage} to={after.diagnosis.coverage} />
         <Delta label="Mechanism depth" from={before.diagnosis.depth} to={after.diagnosis.depth} />
       </div>
 
       {total > 0 && (
-        <ul className="mt-6 space-y-2 border-t border-rule pt-4">
+        <ul className="mt-7 space-y-2.5 border-t border-rule pt-5">
           {resolved.map((gap) => (
-            <li key={gap.id} className="flex items-baseline gap-3 text-sm">
+            <li key={gap.id} className="flex items-baseline gap-3">
               <span aria-hidden="true" className="text-ok">
                 ✓
               </span>
               <span className="text-ink-3 line-through">{gap.title}</span>
-              <span className="label ml-auto shrink-0">{GAP_META[gap.type].code}</span>
+              <span className="code ml-auto shrink-0 text-ink-3">{GAP_META[gap.type].code}</span>
             </li>
           ))}
           {open.map((gap) => (
-            <li key={gap.id} className="flex items-baseline gap-3 text-sm">
+            <li key={gap.id} className="flex items-baseline gap-3">
               <span aria-hidden="true" className="text-ink-3">
                 ○
               </span>
               <span className="text-ink">{gap.title}</span>
-              <span className="label ml-auto shrink-0">{GAP_META[gap.type].code}</span>
+              <span className="code ml-auto shrink-0 text-ink-3">{GAP_META[gap.type].code}</span>
             </li>
           ))}
         </ul>

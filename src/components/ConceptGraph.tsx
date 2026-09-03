@@ -84,11 +84,15 @@ export function ConceptGraph({
   // below that it scrolls horizontally instead of becoming unreadable.
   const frameRef = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(1);
+  const [overflows, setOverflows] = useState(false);
   useEffect(() => {
     const frame = frameRef.current;
     if (!frame) return;
-    const measure = () =>
-      setScale(Math.min(1, Math.max(0.62, frame.clientWidth / graph.width)));
+    const measure = () => {
+      const next = Math.min(1, Math.max(0.62, frame.clientWidth / graph.width));
+      setScale(next);
+      setOverflows(graph.width * next > frame.clientWidth + 1);
+    };
     measure();
     const observer = new ResizeObserver(measure);
     observer.observe(frame);
@@ -238,7 +242,7 @@ export function ConceptGraph({
                     y={placed.y + 22 + i * LINE_H}
                     textAnchor="middle"
                     fill={style.text}
-                    fontSize="14.5"
+                    fontSize="15"
                     fontFamily="var(--font-sans)"
                     fontWeight={500}
                   >
@@ -251,8 +255,8 @@ export function ConceptGraph({
                     y={placed.y + placed.h - 10}
                     textAnchor="middle"
                     fill={style.stroke}
-                    fontSize="10.5"
-                    letterSpacing="0.12em"
+                    fontSize="11.5"
+                    letterSpacing="0.06em"
                     fontFamily="var(--font-mono)"
                   >
                     {STATUS_META[status].label.toUpperCase()}
@@ -264,23 +268,29 @@ export function ConceptGraph({
         </svg>
       </div>
 
+      {overflows && (
+        <p className="mt-3 text-sm text-ink-3">
+          The chain is wider than the panel — scroll sideways to see the rest.
+        </p>
+      )}
+
       {flaggedEdgeInfo && (
-        <p className="mt-4 border-l-2 border-bad pl-3 text-sm leading-relaxed text-ink-2">
-          <span className="label mr-2 text-bad">Link</span>
+        <p className="mt-4 border-l-2 border-bad pl-3.5 leading-relaxed text-ink-2">
+          <span className="mr-2 font-medium text-bad">Link</span>
           {nodeLabel(map, flaggedEdgeInfo.from)} → {nodeLabel(map, flaggedEdgeInfo.to)}:{" "}
           {flaggedEdgeInfo.label}
         </p>
       )}
 
       <figcaption className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-rule pt-3">
-        <span className="label">Link</span>
+        <span className="text-sm text-ink-3">Relation</span>
         {[
           ["causes", "brings about"],
           ["produces", "yields"],
           ["requires", "impossible without"],
           ["enables", "makes possible"],
         ].map(([relation, label]) => (
-          <span key={relation} className="flex items-center gap-2 text-xs text-ink-2">
+          <span key={relation} className="flex items-center gap-2 text-sm text-ink-2">
             <svg width="26" height="8" aria-hidden="true">
               <line
                 x1="0"

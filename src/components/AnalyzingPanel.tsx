@@ -20,26 +20,26 @@ export function AnalyzingPanel({ topic }: { topic: string }) {
   }, []);
 
   return (
-    <section aria-labelledby="analyzing-heading" aria-busy="true" className="py-20">
+    <section aria-labelledby="analyzing-heading" aria-busy="true" className="py-24">
       <p className="label">Step 2 — diagnosis</p>
-      <h1 id="analyzing-heading" className="mt-3 text-4xl leading-tight">
+      <h1 id="analyzing-heading" className="display mt-2 text-4xl">
         Diagnosing…
       </h1>
-      <p className="mt-2 text-sm text-ink-2">{topic}</p>
+      <p className="mt-3 text-lg text-ink-2">{topic}</p>
 
-      <div className="mt-8 h-0.5 w-full max-w-lg overflow-hidden bg-sunken">
+      <div className="mt-9 h-0.5 w-full max-w-lg overflow-hidden bg-sunken">
         <div className="anim-sweep h-full w-1/4 bg-accent" />
       </div>
 
-      <ol className="mt-8 space-y-3" aria-live="polite">
+      <ol className="mt-9 space-y-3.5" aria-live="polite">
         {STEPS.map((label, index) => (
           <li
             key={label}
-            className={`flex items-baseline gap-3 text-sm transition-colors duration-200 ${
+            className={`flex items-baseline gap-3 transition-colors duration-200 ${
               index <= step ? "text-ink" : "text-ink-3"
             }`}
           >
-            <span aria-hidden="true" className="font-mono text-xs">
+            <span aria-hidden="true" className="code">
               {index < step ? "✓" : index === step ? "▸" : "·"}
             </span>
             {label}

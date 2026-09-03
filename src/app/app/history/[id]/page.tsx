@@ -11,34 +11,36 @@ export default async function RunPage({ params }: { params: Promise<{ id: string
   const run = getRun(user.id, Number(id));
   if (!run || run.attempts.length === 0) notFound();
 
+  const latest = run.attempts[run.attempts.length - 1];
+
   return (
-    <div className="pt-10">
+    <div className="pt-12">
       <div className="flex flex-wrap items-baseline justify-between gap-3">
-        <Link href="/app/history" className="label hover:text-ink">
+        <Link href="/app/history" className="text-[0.9375rem] text-ink-2 hover:text-ink">
           ← History
         </Link>
-        <span className="label">{formatDate(run.createdAt)}</span>
+        <span className="text-sm text-ink-3">{formatDate(run.createdAt)}</span>
       </div>
 
-      <p className="mt-6 font-display text-3xl leading-tight">{run.topic}</p>
+      <h1 className="display mt-6 text-3xl">{run.topic}</h1>
 
       <details className="panel mt-5 p-5">
-        <summary className="label cursor-pointer select-none hover:text-ink">
-          What you wrote (attempt {run.attempts[run.attempts.length - 1].index})
+        <summary className="cursor-pointer select-none font-medium text-ink-2 hover:text-ink">
+          What you wrote (attempt {latest.index})
         </summary>
-        <p className="mt-3 whitespace-pre-wrap font-display text-base leading-relaxed text-ink-2">
-          {run.attempts[run.attempts.length - 1].explanation}
+        <p className="prose-measure mt-4 whitespace-pre-wrap text-[1.0625rem] leading-relaxed text-ink-2">
+          {latest.explanation}
         </p>
       </details>
 
       <DiagnosisView map={run.map} attempts={run.attempts} runId={run.id} readOnly />
 
-      <div className="pb-10">
+      <div className="pb-12">
         <Link
           href={`/app/practice?topic=${encodeURIComponent(run.topic)}`}
           className="btn btn-primary"
         >
-          Explain this again
+          Explain This Again
         </Link>
       </div>
     </div>

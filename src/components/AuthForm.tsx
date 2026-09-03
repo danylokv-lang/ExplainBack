@@ -96,7 +96,7 @@ export function AuthForm({ mode }: { mode: Mode }) {
         <p
           role="alert"
           aria-live="polite"
-          className="border-l-2 border-bad bg-bad-bg px-4 py-3 text-sm text-ink"
+          className="border-l-[3px] border-bad bg-bad-bg p-4 leading-relaxed text-ink"
         >
           {error}
         </p>
@@ -105,11 +105,11 @@ export function AuthForm({ mode }: { mode: Mode }) {
       <button type="submit" className="btn btn-primary w-full" disabled={pending}>
         {pending
           ? mode === "signup"
-            ? "Creating your account…"
-            : "Signing you in…"
+            ? "Creating Your Account…"
+            : "Signing You In…"
           : mode === "signup"
-            ? "Create account"
-            : "Sign in"}
+            ? "Create Account"
+            : "Sign In"}
       </button>
     </form>
   );

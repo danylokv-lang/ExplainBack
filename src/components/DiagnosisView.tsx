@@ -10,11 +10,11 @@ import { RepairLesson } from "./RepairLesson";
 import type { Attempt, ConceptMap, NodeStatusKind } from "@/lib/types";
 import { STATUS_META } from "@/lib/types";
 
-const LEGEND: { status: NodeStatusKind; swatch: string }[] = [
-  { status: "explained", swatch: "bg-ok-bg border-ok" },
-  { status: "shallow", swatch: "bg-warn-bg border-warn" },
-  { status: "wrong", swatch: "bg-bad-bg border-bad" },
-  { status: "missing", swatch: "bg-transparent border-void border-dashed" },
+const LEGEND: { status: NodeStatusKind; swatch: string; note: string }[] = [
+  { status: "explained", swatch: "bg-ok-bg border-ok", note: "named, with the mechanism" },
+  { status: "shallow", swatch: "bg-warn-bg border-warn", note: "named, mechanism missing" },
+  { status: "wrong", swatch: "bg-bad-bg border-bad", note: "stated incorrectly" },
+  { status: "missing", swatch: "bg-transparent border-void border-dashed", note: "never mentioned" },
 ];
 
 interface Props {
@@ -51,26 +51,22 @@ export function DiagnosisView({ map, attempts, runId, onRetry, onReset, readOnly
       const data = (await response.json()) as { created?: number; error?: string };
       if (!response.ok) {
         setCardState("error");
-        setCardMessage(data.error ?? "Could not generate study cards.");
+        setCardMessage(data.error ?? "Could not generate study cards. Try again in a moment.");
         return;
       }
       setCardState("done");
       setCardMessage(`${data.created} cards added to your deck.`);
     } catch {
       setCardState("error");
-      setCardMessage("Could not reach the server.");
+      setCardMessage("Could not reach the server. Check your connection and try again.");
     }
   }
 
   return (
-    <div className="space-y-10 py-10">
+    <div className="space-y-12 py-12">
       <header>
-        <p className="label">
-          Step 2 — diagnosis · attempt {current.index}
-        </p>
-        <h1 className="mt-3 max-w-3xl font-display text-4xl leading-[1.15] sm:text-5xl">
-          {diagnosis.verdict}
-        </h1>
+        <p className="label">Step 2 — diagnosis · attempt {current.index}</p>
+        <h1 className="display mt-2 max-w-4xl text-4xl sm:text-5xl">{diagnosis.verdict}</h1>
       </header>
 
       <MetricsStrip
@@ -82,28 +78,47 @@ export function DiagnosisView({ map, attempts, runId, onRetry, onReset, readOnly
 
       {attempts.length > 1 && <ProgressCompare before={first} after={current} />}
 
+      <section aria-labelledby="gaps-heading">
+        <h2 id="gaps-heading" className="display text-3xl">
+          Where It Stops Holding
+        </h2>
+        <p className="prose-measure mt-3 leading-relaxed text-ink-2">
+          Every gap quotes your own words. Select one to light up the concepts it breaks on
+          the map below.
+        </p>
+        <div className="mt-6">
+          <GapList gaps={diagnosis.gaps} activeGapId={activeGapId} onSelect={setActiveGapId} />
+        </div>
+      </section>
+
       <section aria-labelledby="graph-heading" className="panel p-5 sm:p-6">
         <div className="flex flex-wrap items-baseline justify-between gap-3">
-          <h2 id="graph-heading" className="text-2xl leading-tight">
-            The reference map
+          <h2 id="graph-heading" className="display text-2xl">
+            The Reference Map
           </h2>
-          <p className="label">{map.source === "preset" ? "curated" : "generated"}</p>
+          <p className="text-sm text-ink-3">{map.source === "preset" ? "Curated" : "Generated"}</p>
         </div>
-        <p className="mt-2 max-w-2xl text-sm leading-relaxed text-ink-2">
-          This is the skeleton your explanation was measured against. A node&apos;s colour is
-          what happened to it in your text. Click one to see what should have been said.
+        <p className="prose-measure mt-2 leading-relaxed text-ink-2">
+          This is what your explanation was measured against. Click a concept to see what
+          someone who understands it would have said.
         </p>
 
-        <ul className="mt-4 flex flex-wrap gap-x-5 gap-y-2">
-          {LEGEND.map(({ status, swatch }) => (
-            <li key={status} className="flex items-center gap-2 text-xs text-ink-2">
-              <span aria-hidden="true" className={`inline-block h-3 w-3 border ${swatch}`} />
-              {STATUS_META[status].label}
+        <ul className="mt-5 grid gap-x-6 gap-y-2 sm:grid-cols-2 lg:grid-cols-4">
+          {LEGEND.map(({ status, swatch, note }) => (
+            <li key={status} className="flex items-baseline gap-2.5 text-sm">
+              <span
+                aria-hidden="true"
+                className={`inline-block h-3 w-3 shrink-0 translate-y-0.5 border ${swatch}`}
+              />
+              <span>
+                <span className="font-medium text-ink">{STATUS_META[status].label}</span>
+                <span className="text-ink-3"> — {note}</span>
+              </span>
             </li>
           ))}
         </ul>
 
-        <div className="mt-5">
+        <div className="mt-6">
           <ConceptGraph
             map={map}
             statuses={diagnosis.nodeStatuses}
@@ -114,37 +129,39 @@ export function DiagnosisView({ map, attempts, runId, onRetry, onReset, readOnly
         </div>
 
         {selectedNode && (
-          <div className="anim-rise mt-5 border-t border-rule pt-5" aria-live="polite">
+          <div className="anim-rise mt-6 border-t border-rule pt-6" aria-live="polite">
             <div className="flex flex-wrap items-baseline justify-between gap-2">
-              <h3 className="font-display text-2xl">{selectedNode.label}</h3>
-              <span className="label">
+              <h3 className="display text-2xl">{selectedNode.label}</h3>
+              <span className="text-sm text-ink-3">
                 {selectedStatus ? STATUS_META[selectedStatus.status].label : "—"}
               </span>
             </div>
-            <p className="mt-2 text-sm leading-relaxed text-ink-2">{selectedNode.definition}</p>
+            <p className="prose-measure mt-2 leading-relaxed text-ink-2">
+              {selectedNode.definition}
+            </p>
 
-            <p className="label mt-4">What should have been said</p>
-            <p className="mt-1 font-display text-base leading-relaxed text-ink">
+            <p className="label mt-5">What should have been said</p>
+            <p className="prose-measure mt-1 text-[1.0625rem] leading-relaxed text-ink">
               {selectedNode.mechanism}
             </p>
 
             {selectedStatus?.evidence && (
               <>
-                <p className="label mt-4">From your text</p>
-                <p className="mt-1 border-l border-rule-2 pl-3 font-display text-sm italic leading-relaxed text-ink-2">
-                  {selectedStatus.evidence}
+                <p className="label mt-5">What you actually wrote</p>
+                <p className="prose-measure mt-1 border-l-2 border-rule-2 pl-3.5 italic leading-relaxed text-ink-2">
+                  &ldquo;{selectedStatus.evidence}&rdquo;
                 </p>
               </>
             )}
 
-            <p className="label mt-4">The usual wrong model</p>
-            <p className="mt-1 text-sm leading-relaxed text-ink-2">
+            <p className="label mt-5 text-warn">The usual wrong model</p>
+            <p className="prose-measure mt-1 leading-relaxed text-ink-2">
               {selectedNode.misconception}
             </p>
 
             <button
               type="button"
-              className="btn btn-ghost mt-4 px-3 py-1.5 text-xs"
+              className="btn btn-ghost mt-5 px-3.5 py-2 text-sm"
               onClick={() => setSelectedNodeId(null)}
             >
               Close
@@ -153,57 +170,40 @@ export function DiagnosisView({ map, attempts, runId, onRetry, onReset, readOnly
         )}
       </section>
 
-      <section aria-labelledby="gaps-heading">
-        <h2 id="gaps-heading" className="text-3xl leading-tight">
-          Where it stops holding
-        </h2>
-        <p className="mt-2 max-w-2xl text-sm leading-relaxed text-ink-2">
-          Every gap rests on a verbatim quote from your text. Select one and the nodes it
-          concerns light up on the map.
-        </p>
-        <div className="mt-5">
-          <GapList gaps={diagnosis.gaps} activeGapId={activeGapId} onSelect={setActiveGapId} />
-        </div>
-      </section>
-
       <RepairLesson questions={diagnosis.repair} gaps={diagnosis.gaps} />
 
-      <div className="ruler" />
-
-      <section className={`grid gap-6 ${readOnly ? "" : "lg:grid-cols-2"}`}>
+      <section className={`grid gap-5 ${readOnly ? "" : "lg:grid-cols-2"}`}>
         {!readOnly && onRetry && (
-          <div className="panel flex flex-col justify-between p-5 sm:p-6">
+          <div className="panel flex flex-col justify-between p-6">
             <div>
-              <p className="label">Close the loop</p>
-              <h2 className="mt-2 text-2xl leading-tight">Explain it again</h2>
-              <p className="mt-2 text-sm leading-relaxed text-ink-2">
-                Same topic, second pass, with the repair questions in mind. We compare
+              <h2 className="display text-2xl">Close the Loop</h2>
+              <p className="mt-2 leading-relaxed text-ink-2">
+                Explain the same topic again with the repair questions in mind. We score it
                 against attempt {first.index}.
               </p>
             </div>
-            <div className="mt-5 flex flex-wrap gap-3">
+            <div className="mt-6 flex flex-wrap gap-3">
               <button type="button" className="btn btn-primary" onClick={onRetry}>
-                Try explaining again
+                Try Explaining Again
               </button>
               {onReset && (
                 <button type="button" className="btn btn-ghost" onClick={onReset}>
-                  Another topic
+                  Another Topic
                 </button>
               )}
             </div>
           </div>
         )}
 
-        <div className="panel flex flex-col justify-between p-5 sm:p-6">
+        <div className="panel flex flex-col justify-between p-6">
           <div>
-            <p className="label">Make it stick</p>
-            <h2 className="mt-2 text-2xl leading-tight">Turn these gaps into cards</h2>
-            <p className="mt-2 text-sm leading-relaxed text-ink-2">
-              One card per gap, each written so a memorised definition cannot answer it,
-              then scheduled for review over the following weeks.
+            <h2 className="display text-2xl">Turn These Gaps Into Cards</h2>
+            <p className="prose-measure mt-2 leading-relaxed text-ink-2">
+              One card per gap, each written so a memorised definition cannot answer it, then
+              scheduled for review over the coming weeks.
             </p>
           </div>
-          <div className="mt-5 flex flex-wrap items-center gap-3">
+          <div className="mt-6 flex flex-wrap items-center gap-3">
             <button
               type="button"
               className="btn btn-primary"
@@ -211,20 +211,20 @@ export function DiagnosisView({ map, attempts, runId, onRetry, onReset, readOnly
               disabled={!runId || cardState === "working" || cardState === "done"}
             >
               {cardState === "working"
-                ? "Writing cards…"
+                ? "Writing Cards…"
                 : cardState === "done"
-                  ? "Cards created"
-                  : "Generate study cards"}
+                  ? "Cards Created"
+                  : "Generate Study Cards"}
             </button>
             {cardState === "done" && (
               <Link href="/app/cards" className="btn btn-ghost">
-                Review now
+                Review Now
               </Link>
             )}
             {cardMessage && (
               <p
                 role="status"
-                className={`text-sm ${cardState === "error" ? "text-bad" : "text-ink-2"}`}
+                className={`text-[0.9375rem] ${cardState === "error" ? "text-bad" : "text-ink-2"}`}
               >
                 {cardMessage}
               </p>

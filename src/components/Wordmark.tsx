@@ -12,7 +12,7 @@ export function Wordmark({ href = "/", muted = false }: { href?: string; muted?:
         className="inline-block h-2 w-2 translate-y-[-1px] border border-ink bg-ok transition-colors duration-130 group-hover:bg-ink"
       />
       <span
-        className={`font-display text-lg leading-none tracking-tight ${muted ? "text-ink-2" : "text-ink"}`}
+        className={`display text-xl ${muted ? "text-ink-2" : "text-ink"}`}
       >
         ExplainBack
       </span>

@@ -171,8 +171,17 @@ is coloured decoratively — chroma means diagnosis.
 ### Design
 
 Light and dark themes are token-driven, with a three-way selector (light / dark / follow
-the system) that applies before first paint. Typography pairs Instrument Serif for
-display, Archivo for the interface, and IBM Plex Mono for technical captions.
+the system) that applies before first paint.
+
+Two rules keep the interface readable. **Legibility first:** body copy sits at 16px with a
+1.65 line height, secondary text never drops below 15px, and every text colour clears WCAG
+AA against its own background — the contrast ratio of each ink token is recorded next to
+it in `globals.css` so a future edit cannot quietly reintroduce grey-on-grey. The display
+serif (Instrument Serif) is used only at 28px and above, where its thin strokes are an
+asset rather than a tax; Archivo carries the interface and all running text, and IBM Plex
+Mono is limited to short codes and counters. **Colour means something:** the interface
+itself is paper, ink and hairlines, so a green node or an amber bar is always a diagnosis
+and never decoration.
 
 ---
 

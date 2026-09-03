@@ -1,8 +1,8 @@
 import type { ConceptEdge, ConceptNode } from "./types";
 
-export const NODE_W = 168;
+export const NODE_W = 176;
 export const LINE_H = 16;
-export const NODE_PAD_Y = 26;
+export const NODE_PAD_Y = 28;
 export const COL_GAP = 88;
 export const ROW_GAP = 26;
 export const MARGIN = 24;
