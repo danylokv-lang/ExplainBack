@@ -27,7 +27,7 @@ export function TopicPicker({ presets, pendingTopic, error, onPick }: Props) {
 
       {error && (
         <p
-          className="mt-6 border-l-[3px] border-bad bg-bad-bg p-4 leading-relaxed text-ink"
+          className="mt-6 rounded-2xl border border-bad/25 bg-bad-bg p-4 leading-relaxed text-ink"
           role="alert"
         >
           {error}
@@ -43,7 +43,7 @@ export function TopicPicker({ presets, pendingTopic, error, onPick }: Props) {
                 type="button"
                 onClick={() => onPick(preset.topic)}
                 disabled={busy}
-                className="panel group flex h-full w-full flex-col items-start p-6 text-left transition-colors duration-130 hover:border-rule-2 hover:bg-raised disabled:cursor-not-allowed disabled:opacity-60"
+                className="panel card-hover group flex h-full w-full flex-col items-start p-6 text-left disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0 disabled:hover:shadow-sm"
               >
                 <span className="text-sm text-ink-3">{preset.domain}</span>
                 <span className="display mt-2 text-2xl text-ink">{preset.topic}</span>

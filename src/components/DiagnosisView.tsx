@@ -148,7 +148,7 @@ export function DiagnosisView({ map, attempts, runId, onRetry, onReset, readOnly
             {selectedStatus?.evidence && (
               <>
                 <p className="label mt-5">What you actually wrote</p>
-                <p className="prose-measure mt-1 border-l-2 border-rule-2 pl-3.5 italic leading-relaxed text-ink-2">
+                <p className="prose-measure mt-1 rounded-xl bg-sunken px-3.5 py-2.5 leading-relaxed text-ink-2">
                   &ldquo;{selectedStatus.evidence}&rdquo;
                 </p>
               </>

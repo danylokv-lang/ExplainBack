@@ -96,7 +96,7 @@ export function AuthForm({ mode }: { mode: Mode }) {
         <p
           role="alert"
           aria-live="polite"
-          className="border-l-[3px] border-bad bg-bad-bg p-4 leading-relaxed text-ink"
+          className="rounded-2xl border border-bad/25 bg-bad-bg p-4 leading-relaxed text-ink"
         >
           {error}
         </p>

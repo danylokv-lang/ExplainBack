@@ -49,7 +49,7 @@ export function GapList({ gaps, activeGapId, onSelect, columns = 2 }: Props) {
               }`}
             >
               <span className="flex flex-wrap items-center gap-x-3 gap-y-2">
-                <span className={`code border px-1.5 py-0.5 ${severity.chip}`}>{meta.code}</span>
+                <span className={`chip code border ${severity.chip}`}>{meta.code}</span>
                 <span className="text-sm text-ink-2">{meta.label}</span>
                 <span className="ml-auto text-sm text-ink-3">{severity.label}</span>
               </span>
@@ -59,7 +59,7 @@ export function GapList({ gaps, activeGapId, onSelect, columns = 2 }: Props) {
               </span>
 
               {gap.evidence && (
-                <span className="mt-3 block border-l-2 border-rule-2 pl-3.5 text-[0.9375rem] italic leading-relaxed text-ink-2">
+                <span className="mt-3 block rounded-xl bg-sunken px-3.5 py-2.5 text-[0.9375rem] leading-relaxed text-ink-2">
                   &ldquo;{gap.evidence}&rdquo;
                 </span>
               )}

@@ -36,13 +36,13 @@ export default async function CardsPage() {
               {all.length} {plural(all.length, "card")}
             </p>
           </div>
-          <ul className="mt-5 divide-y divide-rule border border-rule bg-surface">
+          <ul className="mt-5 divide-y divide-rule overflow-hidden rounded-2xl border border-rule bg-surface shadow-sm">
             {all.map((card) => (
               <li key={card.id} className="px-5 py-5">
                 <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1 text-sm text-ink-3">
                   <span>{card.topic}</span>
                   {card.gapType && (
-                    <span className="code border border-rule-2 px-1.5 py-0.5 text-ink-2">
+                    <span className="chip code bg-accent-bg text-accent">
                       {GAP_META[card.gapType].code}
                     </span>
                   )}

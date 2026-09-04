@@ -41,7 +41,7 @@ const STEPS = [
 function SectionLabel({ number, children }: { number: string; children: React.ReactNode }) {
   return (
     <p className="flex items-center gap-3 text-sm text-ink-3">
-      <span className="code">{number}</span>
+      <span className="code text-ink-2">{number}</span>
       <span aria-hidden="true" className="h-px w-6 bg-rule-2" />
       {children}
     </p>
@@ -64,7 +64,7 @@ export default function LandingPage() {
               <h1 className="display mt-5 text-[2.75rem] sm:text-6xl">
                 You don&rsquo;t ask the AI to explain it.
                 <br />
-                <em className="italic">You</em> explain it.
+                <span className="text-accent">You</span> explain it.
               </h1>
               <p className="mt-7 max-w-xl text-xl leading-[1.6] text-ink-2">
                 Recognising a topic feels exactly like understanding it — until you have to
@@ -135,7 +135,7 @@ export default function LandingPage() {
         <section
           id="problem"
           aria-labelledby="problem-heading"
-          className="border-y border-rule bg-surface"
+          className="border-y border-rule bg-sunken/60"
         >
           <div className="mx-auto w-full max-w-6xl px-5 py-20 sm:px-8">
             <SectionLabel number="01">The problem</SectionLabel>
@@ -144,7 +144,7 @@ export default function LandingPage() {
             </h2>
 
             <div className="mt-12 grid gap-5 lg:grid-cols-2">
-              <div className="border border-rule bg-bg p-7">
+              <div className="rounded-2xl border border-rule bg-surface p-7 shadow-sm">
                 <p className="text-sm text-ink-3">What a test sees</p>
                 <p className="mt-4 text-2xl font-medium leading-snug text-ink">
                   &ldquo;The Krebs cycle produces a lot of ATP.&rdquo;
@@ -155,8 +155,8 @@ export default function LandingPage() {
                   how revision went.
                 </p>
               </div>
-              <div className="border border-rule bg-bg p-7">
-                <p className="text-sm font-medium text-warn">What understanding requires</p>
+              <div className="rounded-2xl border border-accent/30 bg-accent-bg p-7 shadow-sm">
+                <p className="text-sm font-semibold text-accent">What understanding requires</p>
                 <p className="mt-4 text-2xl font-medium leading-snug text-ink">
                   Electrons stripped onto carriers, then spent pumping protons across a
                   membrane.
@@ -203,7 +203,7 @@ export default function LandingPage() {
         <section
           id="taxonomy"
           aria-labelledby="taxonomy-heading"
-          className="border-y border-rule bg-surface"
+          className="border-y border-rule bg-sunken/60"
         >
           <div className="mx-auto w-full max-w-6xl px-5 py-20 sm:px-8">
             <SectionLabel number="03">The five gaps</SectionLabel>
@@ -216,7 +216,7 @@ export default function LandingPage() {
               it.
             </p>
 
-            <ul className="mt-12 divide-y divide-rule border border-rule bg-bg">
+            <ul className="mt-12 divide-y divide-rule overflow-hidden rounded-2xl border border-rule bg-surface shadow-sm">
               {TAXONOMY.map((type) => {
                 const meta = GAP_META[type];
                 return (
@@ -224,7 +224,7 @@ export default function LandingPage() {
                     key={type}
                     className="flex flex-col gap-3 p-6 sm:flex-row sm:items-baseline sm:gap-8"
                   >
-                    <span className="code shrink-0 self-start border border-rule-2 px-2 py-1 text-ink-2">
+                    <span className="code chip shrink-0 self-start bg-accent-bg text-accent">
                       {meta.code}
                     </span>
                     <span className="w-56 shrink-0 text-lg font-medium leading-snug text-ink">
@@ -241,24 +241,41 @@ export default function LandingPage() {
         {/* 04 — the map itself */}
         <section aria-labelledby="map-heading">
           <div className="mx-auto w-full max-w-6xl px-5 py-20 sm:px-8">
-            <SectionLabel number="04">The reference map</SectionLabel>
+            <SectionLabel number="04">See it on the map</SectionLabel>
             <h2 id="map-heading" className="display mt-5 max-w-2xl text-4xl sm:text-5xl">
-              Your text, drawn onto the mechanism.
+              The same map, coloured by your answer.
             </h2>
-            <p className="prose-measure mt-5 text-lg leading-relaxed text-ink-2">
-              Green survived contact with the explanation. Amber is a term with nothing
-              behind it. Dashed never came up at all. This is the live component running on
-              the sample answer above — click a gap or a concept.
+            <p className="mt-5 text-lg leading-relaxed text-ink-2">
+              Try it below — click a concept or a gap.
             </p>
 
-            <div className="mt-12">
+            <ul className="mt-6 flex flex-wrap gap-x-6 gap-y-2 text-sm text-ink-2">
+              <li className="flex items-center gap-2">
+                <span aria-hidden="true" className="h-2.5 w-2.5 rounded-full bg-ok" />
+                Explained
+              </li>
+              <li className="flex items-center gap-2">
+                <span aria-hidden="true" className="h-2.5 w-2.5 rounded-full bg-warn" />
+                Term only, no mechanism
+              </li>
+              <li className="flex items-center gap-2">
+                <span aria-hidden="true" className="h-2.5 w-2.5 rounded-full bg-bad" />
+                Stated wrong
+              </li>
+              <li className="flex items-center gap-2">
+                <span aria-hidden="true" className="h-2.5 w-2.5 rounded-full border-2 border-dashed border-void" />
+                Never mentioned
+              </li>
+            </ul>
+
+            <div className="mt-8">
               <LandingGraph map={map} diagnosis={SHOWCASE_DIAGNOSIS} />
             </div>
           </div>
         </section>
 
         {/* 05 — cards */}
-        <section aria-labelledby="cards-heading" className="border-y border-rule bg-surface">
+        <section aria-labelledby="cards-heading" className="border-y border-rule bg-sunken/60">
           <div className="mx-auto w-full max-w-6xl px-5 py-20 sm:px-8">
             <div className="grid gap-14 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)] lg:gap-16">
               <div>

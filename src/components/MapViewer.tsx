@@ -21,7 +21,7 @@ export function MapViewer({ map }: { map: ConceptMap }) {
         />
       </div>
 
-      <ol className="divide-y divide-rule border border-rule bg-surface">
+      <ol className="divide-y divide-rule overflow-hidden rounded-2xl border border-rule bg-surface shadow-sm">
         {map.nodes.map((node, index) => (
           <li key={node.id} id={node.id} className="p-5 sm:p-7">
             <div className="flex flex-wrap items-baseline gap-3">

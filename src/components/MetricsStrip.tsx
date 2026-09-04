@@ -28,10 +28,10 @@ function Meter({
         aria-valuemin={0}
         aria-valuemax={100}
         aria-label={label}
-        className="mt-2.5 h-2 w-full bg-sunken"
+        className="mt-2.5 h-2 w-full overflow-hidden rounded-full bg-sunken"
       >
         <div
-          className={`h-full ${tone === "warn" ? "bg-warn" : "bg-accent"}`}
+          className={`h-full rounded-full ${tone === "warn" ? "bg-warn" : "bg-accent"}`}
           style={{ width: `${value}%` }}
         />
       </div>
@@ -72,7 +72,7 @@ export function MetricsStrip({ coverage, depth, elapsedMs, gapCount, compact }: 
       </div>
 
       {illusion && (
-        <div className="mt-6 border-l-[3px] border-warn bg-warn-bg p-4">
+        <div className="mt-6 rounded-2xl border border-warn/25 bg-warn-bg p-4">
           <p className="text-[0.9375rem] font-medium text-ink">
             The two numbers are {spread}&nbsp;points apart.
           </p>

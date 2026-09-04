@@ -92,7 +92,7 @@ export function ExplainPanel({
           />
 
           {speech.interim && (
-            <p className="mt-2 text-[0.9375rem] italic text-ink-3" aria-live="polite">
+            <p className="mt-2 text-[0.9375rem] text-ink-3" aria-live="polite">
               {speech.interim}…
             </p>
           )}
@@ -147,7 +147,7 @@ export function ExplainPanel({
 
           {error && (
             <p
-              className="mt-5 border-l-[3px] border-bad bg-bad-bg p-4 leading-relaxed text-ink"
+              className="mt-5 rounded-2xl border border-bad/25 bg-bad-bg p-4 leading-relaxed text-ink"
               role="alert"
             >
               {error}

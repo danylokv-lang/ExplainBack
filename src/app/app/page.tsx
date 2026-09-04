@@ -4,6 +4,7 @@ import { getStats, listRuns } from "@/lib/db";
 import { formatDate, plural } from "@/lib/plural";
 import { PRESET_TOPICS } from "@/lib/store";
 import { Stat } from "@/components/Stat";
+import { CheckCircleIcon, LayersIcon, PencilIcon, TrendingUpIcon } from "@/components/icons";
 import { GAP_META } from "@/lib/types";
 
 export default async function DashboardPage() {
@@ -47,23 +48,35 @@ export default async function DashboardPage() {
             label="Sessions"
             value={stats.runs}
             note={`${stats.attempts} ${plural(stats.attempts, "explanation")} written`}
+            icon={PencilIcon}
+            tone="accent"
           />
           <Stat
             label="Gaps closed"
             value={stats.gapsClosed}
             note="Confirmed on a second attempt, not self-reported"
+            icon={CheckCircleIcon}
+            tone="ok"
           />
           <Stat
             label="Avg depth gain"
             value={stats.avgDepthGain > 0 ? `+${stats.avgDepthGain}` : stats.avgDepthGain}
             unit="%"
             note="Mechanism depth, first attempt to last"
+            icon={TrendingUpIcon}
+            tone="warn"
           />
-          <Stat label="Cards in deck" value={stats.cards} note={`${stats.dueCards} due now`} />
+          <Stat
+            label="Cards in deck"
+            value={stats.cards}
+            note={`${stats.dueCards} due now`}
+            icon={LayersIcon}
+            tone="void"
+          />
         </div>
 
         {stats.topGapType && (
-          <div className="mt-5 border-l-[3px] border-warn bg-warn-bg p-4">
+          <div className="mt-5 rounded-2xl border border-warn/25 bg-warn-bg p-5">
             <p className="font-medium text-ink">
               Your pattern: {GAP_META[stats.topGapType].label.toLowerCase()}
             </p>
@@ -87,7 +100,7 @@ export default async function DashboardPage() {
         </div>
 
         {runs.length === 0 ? (
-          <div className="panel mt-5 p-6">
+          <div className="panel mt-5 p-6 sm:p-7">
             <p className="prose-measure leading-relaxed text-ink-2">
               Sessions show up here once you have explained something. Four topics are ready
               to go:
@@ -106,7 +119,7 @@ export default async function DashboardPage() {
             </ul>
           </div>
         ) : (
-          <ul className="mt-5 divide-y divide-rule border border-rule bg-surface">
+          <ul className="mt-5 divide-y divide-rule overflow-hidden rounded-2xl border border-rule bg-surface shadow-sm">
             {runs.map((run) => (
               <li key={run.id}>
                 <Link

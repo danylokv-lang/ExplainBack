@@ -6,10 +6,10 @@ import { useRouter } from "next/navigation";
 import { describeInterval, type Grade } from "@/lib/srs";
 import { GAP_META, type StudyCard } from "@/lib/types";
 
-const GRADES: { grade: Grade; label: string; help: string; tone: string }[] = [
-  { grade: "again", label: "Not Really", help: "Back in 10 minutes", tone: "text-bad" },
-  { grade: "good", label: "Got It", help: "Normal interval", tone: "text-ink" },
-  { grade: "easy", label: "Obvious", help: "Longer interval", tone: "text-ok" },
+const GRADES: { grade: Grade; label: string; help: string; tone: string; ring: string }[] = [
+  { grade: "again", label: "Not Really", help: "Back in 10 minutes", tone: "text-bad", ring: "hover:border-bad/40 hover:bg-bad-bg" },
+  { grade: "good", label: "Got It", help: "Normal interval", tone: "text-ink", ring: "hover:border-accent/40 hover:bg-accent-bg" },
+  { grade: "easy", label: "Obvious", help: "Longer interval", tone: "text-ok", ring: "hover:border-ok/40 hover:bg-ok-bg" },
 ];
 
 export function CardReview({ cards }: { cards: StudyCard[] }) {
@@ -77,19 +77,36 @@ export function CardReview({ cards }: { cards: StudyCard[] }) {
     );
   }
 
+  const total = queue.length + done;
+  const progress = total > 0 ? Math.round((done / total) * 100) : 0;
+
   return (
     <div>
       <div className="flex flex-wrap items-baseline justify-between gap-3">
-        <p className="text-sm text-ink-3">
+        <span className="chip bg-accent-bg text-accent">
           {card.topic}
           {card.gapType && ` · ${GAP_META[card.gapType].label}`}
-        </p>
+        </span>
         <p className="text-sm tabular-nums text-ink-3">
           {queue.length} left · {done} done
         </p>
       </div>
 
-      <div className="panel mt-2 p-6 sm:p-8">
+      <div
+        role="progressbar"
+        aria-valuenow={progress}
+        aria-valuemin={0}
+        aria-valuemax={100}
+        aria-label="Deck progress"
+        className="mt-3 h-2 w-full overflow-hidden rounded-full bg-sunken"
+      >
+        <div
+          className="h-full rounded-full bg-accent transition-[width] duration-300"
+          style={{ width: `${progress}%` }}
+        />
+      </div>
+
+      <div className="panel mt-4 p-6 sm:p-8">
         <p className="max-w-3xl text-2xl font-medium leading-[1.35] text-ink">{card.front}</p>
 
         {!revealed ? (
@@ -126,7 +143,7 @@ export function CardReview({ cards }: { cards: StudyCard[] }) {
               type="button"
               disabled={busy}
               onClick={() => grade(option.grade)}
-              className="panel px-5 py-4 text-left transition-colors duration-130 hover:border-rule-2 hover:bg-raised disabled:opacity-50"
+              className={`panel card-hover px-5 py-4 text-left disabled:opacity-50 disabled:hover:translate-y-0 disabled:hover:shadow-sm ${option.ring}`}
             >
               <span className={`block font-medium ${option.tone}`}>{option.label}</span>
               <span className="mt-0.5 block text-sm text-ink-3">{option.help}</span>

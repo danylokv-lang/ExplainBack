@@ -32,7 +32,7 @@ export default async function MapsPage() {
             <li key={preset.id}>
               <Link
                 href={`/app/maps/${slugify(preset.topic)}`}
-                className="panel flex h-full flex-col p-6 transition-colors duration-130 hover:border-rule-2 hover:bg-raised"
+                className="panel card-hover flex h-full flex-col p-6"
               >
                 <span className="text-sm text-ink-3">{preset.domain}</span>
                 <span className="display mt-2 text-2xl text-ink">{preset.topic}</span>

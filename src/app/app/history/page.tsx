@@ -29,7 +29,7 @@ export default async function HistoryPage() {
           </Link>
         </div>
       ) : (
-        <ul className="divide-y divide-rule border border-rule bg-surface">
+        <ul className="divide-y divide-rule overflow-hidden rounded-2xl border border-rule bg-surface shadow-sm">
           {runs.map((run) => {
             const gain = run.lastDepth - run.firstDepth;
             return (
