@@ -13,9 +13,9 @@ export async function POST(request: Request) {
   const password = body.password ?? "";
 
   try {
-    const user = findUserByEmail(email);
+    const user = await findUserByEmail(email);
     // Same message either way: a distinct one would confirm which emails exist.
-    if (!user || !verifyPassword(password, user.password_hash)) {
+    if (!user || !(await verifyPassword(password, user.password_hash))) {
       return NextResponse.json({ error: "Wrong email or password." }, { status: 401 });
     }
     await startSession(user.id);

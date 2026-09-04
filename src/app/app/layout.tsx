@@ -7,7 +7,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   const user = await currentUser();
   if (!user) redirect("/login");
 
-  const stats = getStats(user.id);
+  const stats = await getStats(user.id);
 
   return (
     <AppShell user={user} dueCards={stats.dueCards}>

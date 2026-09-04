@@ -8,7 +8,7 @@ import { formatDate } from "@/lib/plural";
 export default async function RunPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const user = (await currentUser())!;
-  const run = getRun(user.id, Number(id));
+  const run = await getRun(user.id, Number(id));
   if (!run || run.attempts.length === 0) notFound();
 
   const latest = run.attempts[run.attempts.length - 1];

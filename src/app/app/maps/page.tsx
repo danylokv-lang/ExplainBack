@@ -9,7 +9,7 @@ export const metadata: Metadata = { title: "Map library" };
 export default async function MapsPage() {
   await currentUser();
   const presetSlugs = new Set(PRESET_TOPICS.map((preset) => slugify(preset.topic)));
-  const generated = listGeneratedMaps().filter((map) => !presetSlugs.has(map.slug));
+  const generated = (await listGeneratedMaps()).filter((map) => !presetSlugs.has(map.slug));
 
   return (
     <div className="space-y-12 py-12">

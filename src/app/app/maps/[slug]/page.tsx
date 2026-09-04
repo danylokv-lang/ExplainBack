@@ -8,7 +8,7 @@ export default async function MapPage({ params }: { params: Promise<{ slug: stri
   const { slug } = await params;
 
   const preset = PRESET_TOPICS.find((candidate) => slugify(candidate.topic) === slug);
-  const map = preset ? getMap(preset.topic) : readCachedMap(slug);
+  const map = preset ? await getMap(preset.topic) : await readCachedMap(slug);
   if (!map) notFound();
 
   return (

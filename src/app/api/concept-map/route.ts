@@ -24,7 +24,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const cached = getMap(topic);
+    const cached = await getMap(topic);
     if (cached) return NextResponse.json({ map: cached });
 
     const raw = await callStructured<unknown>({
@@ -34,7 +34,7 @@ export async function POST(request: Request) {
       maxTokens: 4000,
     });
     const map = sanitizeMap(raw, topic);
-    saveMap(map);
+    await saveMap(map);
     return NextResponse.json({ map });
   } catch (err) {
     return failure(err, "Could not build the concept map.");

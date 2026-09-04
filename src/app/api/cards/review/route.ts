@@ -19,14 +19,14 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Malformed review." }, { status: 400 });
     }
 
-    const card = getCard(user.id, cardId);
+    const card = await getCard(user.id, cardId);
     if (!card) return NextResponse.json({ error: "Card not found." }, { status: 404 });
 
     const schedule = nextSchedule(
       { reps: card.reps, intervalDays: card.intervalDays, ease: card.ease },
       grade,
     );
-    updateCardSchedule(
+    await updateCardSchedule(
       cardId,
       schedule.reps,
       schedule.intervalDays,

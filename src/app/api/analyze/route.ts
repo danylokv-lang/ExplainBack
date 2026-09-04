@@ -54,8 +54,8 @@ export async function POST(request: Request) {
     const diagnosis = sanitizeDiagnosis(raw, map);
     const elapsedMs = Date.now() - startedAt;
 
-    if (body.runId && ownsRun(user.id, body.runId)) {
-      addAttempt(body.runId, body.attemptIndex ?? 1, explanation, diagnosis, elapsedMs);
+    if (body.runId && (await ownsRun(user.id, body.runId))) {
+      await addAttempt(body.runId, body.attemptIndex ?? 1, explanation, diagnosis, elapsedMs);
     }
 
     return NextResponse.json({ diagnosis, elapsedMs });

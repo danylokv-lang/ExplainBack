@@ -8,7 +8,7 @@ export const metadata: Metadata = { title: "History" };
 
 export default async function HistoryPage() {
   const user = (await currentUser())!;
-  const runs = listRuns(user.id);
+  const runs = await listRuns(user.id);
 
   return (
     <div className="space-y-9 py-12">

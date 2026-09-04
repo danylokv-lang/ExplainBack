@@ -48,8 +48,8 @@ function SectionLabel({ number, children }: { number: string; children: React.Re
   );
 }
 
-export default function LandingPage() {
-  const map = getMap("Cellular Respiration")!;
+export default async function LandingPage() {
+  const map = (await getMap("Cellular Respiration"))!;
 
   return (
     <>

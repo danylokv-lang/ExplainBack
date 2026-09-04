@@ -22,12 +22,12 @@ export async function POST(request: Request) {
   if (password.length < 8) {
     return NextResponse.json({ error: "Use at least 8 characters for your password." }, { status: 400 });
   }
-  if (findUserByEmail(email)) {
+  if (await findUserByEmail(email)) {
     return NextResponse.json({ error: "An account with this email already exists." }, { status: 409 });
   }
 
   try {
-    const user = createUser(email, name, hashPassword(password));
+    const user = await createUser(email, name, await hashPassword(password));
     await startSession(user.id);
     return NextResponse.json({ user: { id: user.id, email: user.email, name: user.name } });
   } catch (err) {

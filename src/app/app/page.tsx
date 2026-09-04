@@ -9,8 +9,8 @@ import { GAP_META } from "@/lib/types";
 
 export default async function DashboardPage() {
   const user = (await currentUser())!;
-  const stats = getStats(user.id);
-  const runs = listRuns(user.id, 5);
+  const stats = await getStats(user.id);
+  const runs = await listRuns(user.id, 5);
   const firstName = user.name.split(" ")[0];
 
   return (

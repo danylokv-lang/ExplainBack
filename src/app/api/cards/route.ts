@@ -27,7 +27,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Which session should the cards come from?" }, { status: 400 });
     }
 
-    const run = getRun(user.id, runId);
+    const run = await getRun(user.id, runId);
     if (!run) return NextResponse.json({ error: "Session not found." }, { status: 404 });
 
     const latest = run.attempts[run.attempts.length - 1];
@@ -60,7 +60,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "No cards came back for this session." }, { status: 502 });
     }
 
-    insertCards(user.id, runId, run.topic, cards);
+    await insertCards(user.id, runId, run.topic, cards);
     return NextResponse.json({ created: cards.length });
   } catch (err) {
     return failure(err, "Could not generate study cards.");
@@ -72,7 +72,7 @@ export async function GET(request: Request) {
     const user = await requireUser();
     const dueOnly = new URL(request.url).searchParams.get("due") === "1";
     return NextResponse.json({
-      cards: dueOnly ? listDueCards(user.id) : listCards(user.id),
+      cards: dueOnly ? await listDueCards(user.id) : await listCards(user.id),
     });
   } catch (err) {
     return failure(err, "Could not load your cards.");
@@ -86,7 +86,7 @@ export async function DELETE(request: Request) {
     if (!Number.isFinite(id)) {
       return NextResponse.json({ error: "Which card?" }, { status: 400 });
     }
-    deleteCard(user.id, id);
+    await deleteCard(user.id, id);
     return NextResponse.json({ ok: true });
   } catch (err) {
     return failure(err, "Could not delete that card.");

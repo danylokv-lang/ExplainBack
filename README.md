@@ -20,23 +20,26 @@ The Feynman technique, closed into a loop:
 npm install
 ```
 
-```bash
-cp .env.example .env.local
-```
-
-Add your key from <https://console.anthropic.com/settings/keys> to `.env.local`:
-
-```
-ANTHROPIC_API_KEY=sk-ant-...
-```
+Storage is Cloudflare D1 (SQLite, managed at the edge — see [Deploying](#deploying-to-cloudflare)
+below for first-time setup: creating the D1 database and applying the schema). Once that
+one-time setup is done, local development is just:
 
 ```bash
 npm run dev
 ```
 
-Open <http://localhost:3000>, create an account, and start a session. Accounts, sessions
-and cards live in a local SQLite file at `.data/explainback.db` — no service to run and
-no migration step.
+`next.config.ts` calls `initOpenNextCloudflareForDev()`, which proxies D1 (and any other
+Cloudflare bindings) into the plain `next dev` server via a local wrangler-managed instance
+— no separate `wrangler dev` process needed for everyday work.
+
+For local model calls, put your key in `.dev.vars` (gitignored — this is wrangler's local
+equivalent of `.env.local`):
+
+```
+ANTHROPIC_API_KEY=sk-ant-...
+```
+
+Open <http://localhost:3000>, create an account, and start a session.
 
 Four curated topics (cellular respiration, recursion, Ohm's law, supply and demand) ship
 with their concept maps already built, so they open instantly and without a model call.
@@ -46,9 +49,43 @@ Any other topic gets its map generated on the spot.
 
 | Variable | Purpose |
 |---|---|
-| `ANTHROPIC_API_KEY` | Required for diagnosis, map generation and card writing. |
+| `ANTHROPIC_API_KEY` | Required for diagnosis, map generation and card writing. Set via `.dev.vars` locally, `wrangler secret put` in production. |
 | `EXPLAINBACK_MODEL` | Engine model. Defaults to `claude-haiku-4-5`, which keeps a full loop inside a few seconds. Set `claude-sonnet-5` for a deeper read of the mechanism. |
-| `EXPLAINBACK_DATA_DIR` | Where the SQLite file lives. Defaults to `./.data`. |
+
+---
+
+## Deploying to Cloudflare
+
+One-time setup:
+
+```bash
+npx wrangler d1 create explainback
+```
+
+Copy the `database_id` it prints into `wrangler.jsonc` (`d1_databases[0].database_id`), then
+apply the schema to both the local dev database and the real one:
+
+```bash
+npm run cf:migrate:local
+npm run cf:migrate:remote
+```
+
+Set the model key as a Worker secret (prompts for the value, never touches a file):
+
+```bash
+npx wrangler secret put ANTHROPIC_API_KEY
+```
+
+Then, and on every subsequent deploy:
+
+```bash
+npm run cf:deploy
+```
+
+This runs `opennextjs-cloudflare build` (compiles the Next.js app into a Cloudflare Worker
+via [OpenNext](https://opennext.js.org/cloudflare)) followed by `wrangler deploy`. Whenever
+`wrangler.jsonc`'s bindings change, regenerate the local type declarations with
+`npm run cf:types`.
 
 ---
 
@@ -151,8 +188,8 @@ src/
    ├─ schemas.ts                 JSON Schemas for every model response
    ├─ validate.ts                Sanitisation + deterministic coverage
    ├─ layout.ts                  Layered graph layout, cycle-safe
-   ├─ db.ts                      SQLite schema and queries
-   ├─ auth.ts                    scrypt hashing, session cookies
+   ├─ db.ts                      D1 (Cloudflare's SQLite) queries, all async
+   ├─ auth.ts                    Web Crypto PBKDF2 hashing, session cookies
    └─ srs.ts                     Review scheduling
 data/topics.json                 Four curated concept maps
 ```
@@ -174,30 +211,32 @@ Light and dark themes are token-driven, with a three-way selector (light / dark 
 the system) that applies before first paint.
 
 Two rules keep the interface readable. **Legibility first:** body copy sits at 16px with a
-1.65 line height, secondary text never drops below 15px, and every text colour clears WCAG
+1.6 line height, secondary text never drops below 15px, and every text colour clears WCAG
 AA against its own background — the contrast ratio of each ink token is recorded next to
-it in `globals.css` so a future edit cannot quietly reintroduce grey-on-grey. The display
-serif (Instrument Serif) is used only at 28px and above, where its thin strokes are an
-asset rather than a tax; Archivo carries the interface and all running text, and IBM Plex
-Mono is limited to short codes and counters. **Colour means something:** the interface
-itself is paper, ink and hairlines, so a green node or an amber bar is always a diagnosis
-and never decoration.
+it in `globals.css` so a future edit cannot quietly reintroduce grey-on-grey. Plus Jakarta
+Sans carries display type (headings, big numbers), Inter carries the interface and all
+running text, and IBM Plex Mono is limited to short codes and counters. **Colour means
+something:** panels, buttons and chips are rounded with real elevation, but chroma itself
+is reserved for diagnosis state — a green node or an amber bar always means something,
+never decoration.
 
 ---
 
 ## Stack
 
 Next.js 15 (App Router) · React 19 · Tailwind CSS v4 · TypeScript ·
-`@anthropic-ai/sdk` with structured outputs · `node:sqlite` (no native dependency) ·
-Web Speech API for voice input · hand-rolled SVG graph, no charting library.
+`@anthropic-ai/sdk` with structured outputs · Cloudflare Workers + D1 via
+[OpenNext](https://opennext.js.org/cloudflare) · Web Crypto for password hashing (portable
+between Node and Workers) · Web Speech API for voice input · hand-rolled SVG graph, no
+charting library.
 
 ---
 
 ## MVP limits
 
-- Sessions and cards are stored in a local SQLite file; there is no hosted deployment
-  target configured.
 - Voice input works where the Web Speech API exists (Chrome, Safari). Elsewhere the
   button is hidden and typing remains the primary path.
 - Comparison is always against the first attempt of a session, not the previous one.
 - There is no password reset flow.
+- Password hashing is PBKDF2-SHA256 at 100,000 iterations — Cloudflare Workers' hard cap
+  on `crypto.subtle`'s PBKDF2, and the reason it's not scrypt or a higher iteration count.

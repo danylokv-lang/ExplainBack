@@ -10,8 +10,8 @@ export const metadata: Metadata = { title: "Study cards" };
 
 export default async function CardsPage() {
   const user = (await currentUser())!;
-  const due = listDueCards(user.id);
-  const all = listCards(user.id);
+  const due = await listDueCards(user.id);
+  const all = await listCards(user.id);
 
   return (
     <div className="space-y-12 py-12">

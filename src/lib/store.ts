@@ -64,12 +64,12 @@ export function findPreset(topic: string): PresetTopic | undefined {
   return PRESET_TOPICS.find((preset) => slugify(preset.topic) === slug);
 }
 
-/** Presets first, then anything generated earlier and stored in SQLite. */
-export function getMap(topic: string): ConceptMap | undefined {
+/** Presets first, then anything generated earlier and stored in D1. */
+export async function getMap(topic: string): Promise<ConceptMap | undefined> {
   const slug = slugify(topic);
-  return presetBySlug.get(slug) ?? readCachedMap(slug);
+  return presetBySlug.get(slug) ?? (await readCachedMap(slug));
 }
 
-export function saveMap(map: ConceptMap): void {
-  writeCachedMap(slugify(map.topic), map);
+export async function saveMap(map: ConceptMap): Promise<void> {
+  await writeCachedMap(slugify(map.topic), map);
 }

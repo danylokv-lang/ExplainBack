@@ -13,7 +13,7 @@ export async function POST(request: Request) {
     if (!body?.map?.nodes?.length) {
       return NextResponse.json({ error: "No concept map to start from." }, { status: 400 });
     }
-    const runId = createRun(user.id, body.map.topic, body.map);
+    const runId = await createRun(user.id, body.map.topic, body.map);
     return NextResponse.json({ runId });
   } catch (err) {
     return failure(err, "Could not start the session.");
@@ -23,7 +23,7 @@ export async function POST(request: Request) {
 export async function GET() {
   try {
     const user = await requireUser();
-    return NextResponse.json({ runs: listRuns(user.id) });
+    return NextResponse.json({ runs: await listRuns(user.id) });
   } catch (err) {
     return failure(err, "Could not load your sessions.");
   }
