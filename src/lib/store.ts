@@ -1,6 +1,7 @@
 import type { ConceptMap } from "./types";
 import topicsData from "../../data/topics.json";
 import { readCachedMap, writeCachedMap } from "./db";
+import { DEFAULT_LANGUAGE_CODE } from "./languages";
 
 /** Preset topics ship with their map already built, so a session starts instantly. */
 export interface PresetTopic {
@@ -64,12 +65,31 @@ export function findPreset(topic: string): PresetTopic | undefined {
   return PRESET_TOPICS.find((preset) => slugify(preset.topic) === slug);
 }
 
-/** Presets first, then anything generated earlier and stored in D1. */
-export async function getMap(topic: string): Promise<ConceptMap | undefined> {
-  const slug = slugify(topic);
-  return presetBySlug.get(slug) ?? (await readCachedMap(slug));
+/**
+ * A generated map is cached per (topic, response language) — the same topic
+ * asked for in Ukrainian and in Spanish is two different documents, not one
+ * cache entry that would otherwise serve the wrong language on a hit.
+ * Presets are curated, English-only content and ignore language entirely.
+ */
+function cacheKey(topic: string, languageCode: string): string {
+  return languageCode === DEFAULT_LANGUAGE_CODE
+    ? slugify(topic)
+    : `${slugify(topic)}--${languageCode}`;
 }
 
-export async function saveMap(map: ConceptMap): Promise<void> {
-  await writeCachedMap(slugify(map.topic), map);
+/** Presets first (always English), then anything generated earlier and cached in D1. */
+export async function getMap(
+  topic: string,
+  languageCode: string = DEFAULT_LANGUAGE_CODE,
+): Promise<ConceptMap | undefined> {
+  const preset = presetBySlug.get(slugify(topic));
+  if (preset) return preset;
+  return readCachedMap(cacheKey(topic, languageCode));
+}
+
+export async function saveMap(
+  map: ConceptMap,
+  languageCode: string = DEFAULT_LANGUAGE_CODE,
+): Promise<void> {
+  await writeCachedMap(cacheKey(map.topic, languageCode), map);
 }

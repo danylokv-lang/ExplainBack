@@ -7,6 +7,7 @@ import { GapList } from "./GapList";
 import { MetricsStrip } from "./MetricsStrip";
 import { ProgressCompare } from "./ProgressCompare";
 import { RepairLesson } from "./RepairLesson";
+import { getStoredLanguage } from "@/lib/language-client";
 import type { Attempt, ConceptMap, NodeStatusKind } from "@/lib/types";
 import { STATUS_META } from "@/lib/types";
 
@@ -46,7 +47,7 @@ export function DiagnosisView({ map, attempts, runId, onRetry, onReset, readOnly
       const response = await fetch("/api/cards", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ runId }),
+        body: JSON.stringify({ runId, language: getStoredLanguage() }),
       });
       const data = (await response.json()) as { created?: number; error?: string };
       if (!response.ok) {

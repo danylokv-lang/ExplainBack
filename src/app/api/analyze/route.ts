@@ -3,8 +3,9 @@ import { callStructured } from "@/lib/anthropic";
 import { requireUser } from "@/lib/auth";
 import { addAttempt, ownsRun } from "@/lib/db";
 import { failure, readJson } from "@/lib/http";
+import { isSupportedLanguageCode, languageLabel, DEFAULT_LANGUAGE_CODE } from "@/lib/languages";
 import { DIAGNOSIS_SCHEMA } from "@/lib/schemas";
-import { DIAGNOSIS_SYSTEM, diagnosisUser } from "@/lib/prompts";
+import { diagnosisSystem, diagnosisUser } from "@/lib/prompts";
 import { sanitizeDiagnosis } from "@/lib/validate";
 import type { ConceptMap, Gap } from "@/lib/types";
 
@@ -17,6 +18,7 @@ interface AnalyzeBody {
   attemptIndex?: number;
   runId?: number;
   previous?: { explanation: string; gaps: Gap[] };
+  language?: string;
 }
 
 export async function POST(request: Request) {
@@ -44,9 +46,14 @@ export async function POST(request: Request) {
       );
     }
 
+    const languageCode =
+      body.language && isSupportedLanguageCode(body.language)
+        ? body.language
+        : DEFAULT_LANGUAGE_CODE;
+
     const startedAt = Date.now();
     const raw = await callStructured<unknown>({
-      system: DIAGNOSIS_SYSTEM,
+      system: diagnosisSystem(languageLabel(languageCode)),
       user: diagnosisUser(map, explanation, body.previous),
       schema: DIAGNOSIS_SCHEMA,
       maxTokens: 6000,

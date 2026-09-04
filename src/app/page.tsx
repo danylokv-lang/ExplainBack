@@ -1,9 +1,8 @@
 import Link from "next/link";
-import { LandingGraph } from "@/components/LandingGraph";
 import { MetricsStrip } from "@/components/MetricsStrip";
 import { SiteHeader } from "@/components/SiteHeader";
 import { Wordmark } from "@/components/Wordmark";
-import { getMap, PRESET_TOPICS, slugify } from "@/lib/store";
+import { PRESET_TOPICS, slugify } from "@/lib/store";
 import { SHOWCASE_CARD, SHOWCASE_DIAGNOSIS } from "@/lib/showcase";
 import { GAP_META, type GapType } from "@/lib/types";
 
@@ -48,9 +47,7 @@ function SectionLabel({ number, children }: { number: string; children: React.Re
   );
 }
 
-export default async function LandingPage() {
-  const map = (await getMap("Cellular Respiration"))!;
-
+export default function LandingPage() {
   return (
     <>
       <SiteHeader />
@@ -238,48 +235,12 @@ export default async function LandingPage() {
           </div>
         </section>
 
-        {/* 04 — the map itself */}
-        <section aria-labelledby="map-heading">
-          <div className="mx-auto w-full max-w-6xl px-5 py-20 sm:px-8">
-            <SectionLabel number="04">See it on the map</SectionLabel>
-            <h2 id="map-heading" className="display mt-5 max-w-2xl text-4xl sm:text-5xl">
-              The same map, coloured by your answer.
-            </h2>
-            <p className="mt-5 text-lg leading-relaxed text-ink-2">
-              Try it below — click a concept or a gap.
-            </p>
-
-            <ul className="mt-6 flex flex-wrap gap-x-6 gap-y-2 text-sm text-ink-2">
-              <li className="flex items-center gap-2">
-                <span aria-hidden="true" className="h-2.5 w-2.5 rounded-full bg-ok" />
-                Explained
-              </li>
-              <li className="flex items-center gap-2">
-                <span aria-hidden="true" className="h-2.5 w-2.5 rounded-full bg-warn" />
-                Term only, no mechanism
-              </li>
-              <li className="flex items-center gap-2">
-                <span aria-hidden="true" className="h-2.5 w-2.5 rounded-full bg-bad" />
-                Stated wrong
-              </li>
-              <li className="flex items-center gap-2">
-                <span aria-hidden="true" className="h-2.5 w-2.5 rounded-full border-2 border-dashed border-void" />
-                Never mentioned
-              </li>
-            </ul>
-
-            <div className="mt-8">
-              <LandingGraph map={map} diagnosis={SHOWCASE_DIAGNOSIS} />
-            </div>
-          </div>
-        </section>
-
-        {/* 05 — cards */}
+        {/* 04 — cards */}
         <section aria-labelledby="cards-heading" className="border-y border-rule bg-sunken/60">
           <div className="mx-auto w-full max-w-6xl px-5 py-20 sm:px-8">
             <div className="grid gap-14 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)] lg:gap-16">
               <div>
-                <SectionLabel number="05">Making it stick</SectionLabel>
+                <SectionLabel number="04">Making it stick</SectionLabel>
                 <h2 id="cards-heading" className="display mt-5 text-4xl sm:text-5xl">
                   Cards from your gaps, not from the glossary.
                 </h2>

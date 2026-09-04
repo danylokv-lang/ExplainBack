@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
+import { LanguageToggle } from "./LanguageToggle";
 import { ThemeToggle } from "./ThemeToggle";
 import { Wordmark } from "./Wordmark";
 import {
@@ -121,6 +122,12 @@ export function AppShell({
                 <p className="truncate text-xs text-ink-3">{user.email}</p>
               </div>
             </div>
+
+            <div className="mt-3 px-2">
+              <p className="label mb-1.5">AI answers in</p>
+              <LanguageToggle className="w-full" />
+            </div>
+
             <div className="mt-3 flex items-center gap-2 px-2">
               <ThemeToggle />
               <button

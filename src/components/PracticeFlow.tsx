@@ -5,6 +5,7 @@ import { AnalyzingPanel } from "./AnalyzingPanel";
 import { DiagnosisView } from "./DiagnosisView";
 import { ExplainPanel } from "./ExplainPanel";
 import { TopicPicker } from "./TopicPicker";
+import { getStoredLanguage } from "@/lib/language-client";
 import type { PresetTopic } from "@/lib/store";
 import type { Attempt, ConceptMap, Diagnosis } from "@/lib/types";
 
@@ -34,7 +35,7 @@ export function PracticeFlow({
       const response = await fetch("/api/concept-map", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ topic }),
+        body: JSON.stringify({ topic, language: getStoredLanguage() }),
       });
       const data = (await response.json()) as { map?: ConceptMap; error?: string };
       if (!response.ok || !data.map) {
@@ -90,6 +91,7 @@ export function PracticeFlow({
           runId,
           attemptIndex: attempts.length + 1,
           explanation: draft,
+          language: getStoredLanguage(),
           previous: baseline
             ? { explanation: baseline.explanation, gaps: baseline.diagnosis.gaps }
             : undefined,

@@ -3,7 +3,8 @@ import { callStructured } from "@/lib/anthropic";
 import { requireUser } from "@/lib/auth";
 import { deleteCard, getRun, insertCards, listCards, listDueCards } from "@/lib/db";
 import { failure, readJson } from "@/lib/http";
-import { CARDS_SYSTEM, cardsUser } from "@/lib/prompts";
+import { isSupportedLanguageCode, languageLabel, DEFAULT_LANGUAGE_CODE } from "@/lib/languages";
+import { cardsSystem, cardsUser } from "@/lib/prompts";
 import { CARDS_SCHEMA } from "@/lib/schemas";
 import type { GapType } from "@/lib/types";
 
@@ -21,7 +22,7 @@ interface GeneratedCard {
 export async function POST(request: Request) {
   try {
     const user = await requireUser();
-    const body = await readJson<{ runId?: number }>(request);
+    const body = await readJson<{ runId?: number; language?: string }>(request);
     const runId = Number(body?.runId);
     if (!Number.isFinite(runId)) {
       return NextResponse.json({ error: "Which session should the cards come from?" }, { status: 400 });
@@ -35,8 +36,13 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "That session has no diagnosis yet." }, { status: 400 });
     }
 
+    const languageCode =
+      body?.language && isSupportedLanguageCode(body.language)
+        ? body.language
+        : DEFAULT_LANGUAGE_CODE;
+
     const raw = await callStructured<{ cards?: GeneratedCard[] }>({
-      system: CARDS_SYSTEM,
+      system: cardsSystem(languageLabel(languageCode)),
       user: cardsUser(run.map, latest.diagnosis),
       schema: CARDS_SCHEMA,
       maxTokens: 4000,
