@@ -2,10 +2,12 @@
 
 import { useState } from "react";
 import { ConceptGraph } from "./ConceptGraph";
+import { useLocale } from "./LocaleProvider";
 import type { ConceptMap } from "@/lib/types";
 
 /** Reference view of a map: the graph plus the mechanism behind each node. */
 export function MapViewer({ map }: { map: ConceptMap }) {
+  const { t } = useLocale();
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
 
   return (
@@ -31,12 +33,12 @@ export function MapViewer({ map }: { map: ConceptMap }) {
             </div>
             <p className="prose-measure mt-2 leading-relaxed text-ink-2">{node.definition}</p>
 
-            <p className="label mt-5">What someone who understands would say</p>
+            <p className="label mt-5">{t.maps.whatShouldHaveBeenSaid}</p>
             <p className="prose-measure mt-1 text-[1.0625rem] leading-relaxed text-ink">
               {node.mechanism}
             </p>
 
-            <p className="label mt-5 text-warn">The usual wrong model</p>
+            <p className="label mt-5 text-warn">{t.maps.usualWrongModel}</p>
             <p className="prose-measure mt-1 leading-relaxed text-ink-2">{node.misconception}</p>
           </li>
         ))}

@@ -101,6 +101,10 @@ export function sanitizeDiagnosis(raw: unknown, map: ConceptMap): Diagnosis {
     coverage: clamp(coverage),
     depth: clamp(Number(data.depth ?? 0)),
     verdict: data.verdict?.trim() || "Diagnosis complete.",
+    // Falls back to the top gap's own title rather than a generic line: a
+    // named gap beats "review the material" even without a model-written
+    // sentence.
+    nextStep: data.nextStep?.trim() || gaps[0]?.title || "",
     nodeStatuses,
     gaps,
     repair,

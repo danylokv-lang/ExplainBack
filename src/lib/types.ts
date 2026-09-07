@@ -83,6 +83,8 @@ export interface Diagnosis {
   /** 0-100: how far the explanation rests on mechanism rather than vocabulary */
   depth: number;
   verdict: string;
+  /** One imperative sentence: what to fix next, and why it matters most. */
+  nextStep: string;
   nodeStatuses: NodeStatus[];
   gaps: Gap[];
   repair: RepairQuestion[];

@@ -3,16 +3,18 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useLocale } from "./LocaleProvider";
 import { describeInterval, type Grade } from "@/lib/srs";
-import { GAP_META, type StudyCard } from "@/lib/types";
+import type { StudyCard } from "@/lib/types";
 
-const GRADES: { grade: Grade; label: string; help: string; tone: string; ring: string }[] = [
-  { grade: "again", label: "Not Really", help: "Back in 10 minutes", tone: "text-bad", ring: "hover:border-bad/40 hover:bg-bad-bg" },
-  { grade: "good", label: "Got It", help: "Normal interval", tone: "text-ink", ring: "hover:border-accent/40 hover:bg-accent-bg" },
-  { grade: "easy", label: "Obvious", help: "Longer interval", tone: "text-ok", ring: "hover:border-ok/40 hover:bg-ok-bg" },
-];
+const GRADE_STYLE: Record<Grade, { tone: string; ring: string }> = {
+  again: { tone: "text-bad", ring: "hover:border-bad/40 hover:bg-bad-bg" },
+  good: { tone: "text-ink", ring: "hover:border-accent/40 hover:bg-accent-bg" },
+  easy: { tone: "text-ok", ring: "hover:border-ok/40 hover:bg-ok-bg" },
+};
 
 export function CardReview({ cards }: { cards: StudyCard[] }) {
+  const { t } = useLocale();
   const router = useRouter();
   const [queue, setQueue] = useState(cards);
   const [index, setIndex] = useState(0);
@@ -20,6 +22,12 @@ export function CardReview({ cards }: { cards: StudyCard[] }) {
   const [done, setDone] = useState(0);
   const [busy, setBusy] = useState(false);
   const [lastInterval, setLastInterval] = useState<string | null>(null);
+
+  const GRADES: { grade: Grade; label: string; help: string }[] = [
+    { grade: "again", label: t.cards.review.gradeAgain, help: t.cards.review.gradeAgainHelp },
+    { grade: "good", label: t.cards.review.gradeGood, help: t.cards.review.gradeGoodHelp },
+    { grade: "easy", label: t.cards.review.gradeEasy, help: t.cards.review.gradeEasyHelp },
+  ];
 
   const card = queue[index];
 
@@ -59,18 +67,15 @@ export function CardReview({ cards }: { cards: StudyCard[] }) {
     return (
       <div className="panel border-l-[3px] border-l-ok p-6">
         <h2 className="display text-2xl">
-          {done === 0 ? "Nothing Due Right Now" : `${done} Reviewed — Deck Clear`}
+          {done === 0 ? t.cards.review.nothingDue : t.cards.review.deckClear(done)}
         </h2>
-        <p className="prose-measure mt-3 leading-relaxed text-ink-2">
-          Cards come back on a widening schedule. New ones arrive whenever a session turns
-          up gaps worth keeping.
-        </p>
+        <p className="prose-measure mt-3 leading-relaxed text-ink-2">{t.cards.review.nothingDueBody}</p>
         <div className="mt-6 flex flex-wrap gap-3">
           <Link href="/app/practice" className="btn btn-primary">
-            Start a Session
+            {t.cards.startSession}
           </Link>
           <Link href="/app" className="btn btn-ghost">
-            Back to Overview
+            {t.cards.review.backToOverview}
           </Link>
         </div>
       </div>
@@ -85,11 +90,9 @@ export function CardReview({ cards }: { cards: StudyCard[] }) {
       <div className="flex flex-wrap items-baseline justify-between gap-3">
         <span className="chip bg-accent-bg text-accent">
           {card.topic}
-          {card.gapType && ` · ${GAP_META[card.gapType].label}`}
+          {card.gapType && ` · ${t.gapTypes[card.gapType].label}`}
         </span>
-        <p className="text-sm tabular-nums text-ink-3">
-          {queue.length} left · {done} done
-        </p>
+        <p className="text-sm tabular-nums text-ink-3">{t.cards.review.leftDone(queue.length, done)}</p>
       </div>
 
       <div
@@ -97,7 +100,7 @@ export function CardReview({ cards }: { cards: StudyCard[] }) {
         aria-valuenow={progress}
         aria-valuemin={0}
         aria-valuemax={100}
-        aria-label="Deck progress"
+        aria-label={t.cards.review.deckProgress}
         className="mt-3 h-2 w-full overflow-hidden rounded-full bg-sunken"
       >
         <div
@@ -115,19 +118,19 @@ export function CardReview({ cards }: { cards: StudyCard[] }) {
             className="btn btn-primary mt-7"
             onClick={() => setRevealed(true)}
           >
-            Show the Mechanism
+            {t.cards.review.showMechanism}
           </button>
         ) : (
           <div className="anim-rise mt-7 space-y-6 border-t border-rule pt-7">
             <div>
-              <p className="label">The mechanism</p>
+              <p className="label">{t.cards.review.mechanismLabel}</p>
               <p className="prose-measure mt-1.5 text-[1.0625rem] leading-relaxed text-ink">
                 {card.back}
               </p>
             </div>
             {card.trap && (
               <div>
-                <p className="label text-warn">What you were tempted to say</p>
+                <p className="label text-warn">{t.cards.review.trapLabel}</p>
                 <p className="prose-measure mt-1.5 leading-relaxed text-ink-2">{card.trap}</p>
               </div>
             )}
@@ -143,9 +146,9 @@ export function CardReview({ cards }: { cards: StudyCard[] }) {
               type="button"
               disabled={busy}
               onClick={() => grade(option.grade)}
-              className={`panel card-hover px-5 py-4 text-left disabled:opacity-50 disabled:hover:translate-y-0 disabled:hover:shadow-sm ${option.ring}`}
+              className={`panel card-hover px-5 py-4 text-left disabled:opacity-50 disabled:hover:translate-y-0 disabled:hover:shadow-sm ${GRADE_STYLE[option.grade].ring}`}
             >
-              <span className={`block font-medium ${option.tone}`}>{option.label}</span>
+              <span className={`block font-medium ${GRADE_STYLE[option.grade].tone}`}>{option.label}</span>
               <span className="mt-0.5 block text-sm text-ink-3">{option.help}</span>
             </button>
           ))}
@@ -154,7 +157,7 @@ export function CardReview({ cards }: { cards: StudyCard[] }) {
 
       {lastInterval && (
         <p className="mt-4 text-sm text-ink-3" role="status" aria-live="polite">
-          Last card scheduled in {lastInterval}.
+          {t.cards.review.lastScheduled(lastInterval)}
         </p>
       )}
     </div>

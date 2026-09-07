@@ -3,19 +3,21 @@
 /*
   ExplainBack visual system — product, not editorial.
 
-  Plus Jakarta Sans carries headings (a friendly, rounded geometric sans built
-  for app UI, not a display serif borrowed from print). Inter carries body
-  copy and controls. Every surface gets real radius and a soft shadow instead
-  of hairline borders, so the page reads as an app with elevation, not a
-  printed spec sheet.
+  One typeface, Inter, carries both headings and body — set at a heavier
+  weight for display type rather than switching families, so the page reads
+  as a single considered product rather than a template with two fonts
+  bolted together. Every surface gets real radius (12-16px) and a soft, flat
+  shadow instead of hairline borders, so it reads as an app with quiet
+  elevation, not a printed spec sheet or a glassy AI-demo dashboard.
 
-  Colour still means something: chroma is reserved for diagnosis state and for
-  the handful of accent moments (primary actions, progress, badges) that give
-  the product a personality. Ink tones are still checked against WCAG AA.
+  Colour still means something: chroma is reserved for diagnosis state (mint
+  green / amber / coral / slate — the four concept states) and for the small
+  set of accent moments (primary actions, progress, badges). Ink tones are
+  checked against WCAG AA in both themes.
 */
 
 @theme {
-  --font-display: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-plex-mono), ui-monospace, SFMono-Regular, monospace;
 
@@ -73,9 +75,9 @@
   --c-void: #6b6f78;
   --c-void-bg: #edeae3;
 
-  --shadow-sm: 0 1px 2px rgba(22, 24, 28, 0.04), 0 1px 1px rgba(22, 24, 28, 0.03);
-  --shadow-md: 0 4px 14px rgba(22, 24, 28, 0.07), 0 1px 3px rgba(22, 24, 28, 0.05);
-  --shadow-lg: 0 12px 32px rgba(22, 24, 28, 0.12), 0 2px 6px rgba(22, 24, 28, 0.06);
+  --shadow-sm: 0 1px 2px rgba(22, 24, 28, 0.03);
+  --shadow-md: 0 3px 10px rgba(22, 24, 28, 0.05), 0 1px 2px rgba(22, 24, 28, 0.04);
+  --shadow-lg: 0 8px 22px rgba(22, 24, 28, 0.08), 0 2px 4px rgba(22, 24, 28, 0.05);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -88,7 +90,7 @@
     --c-sunken: #292b33;
     --c-ink: #f2f2f0; /* 15.8:1 */
     --c-ink-2: #c2c4cb; /* 9.5:1 */
-    --c-ink-3: #8f929c; /* 5.4:1 */
+    --c-ink-3: #a3a6ac; /* 6.4:1 — extra headroom for compressed video */
     --c-rule: #2b2d35;
     --c-rule-2: #3c3f49;
 
@@ -106,9 +108,9 @@
     --c-void: #8f929c;
     --c-void-bg: #24262d;
 
-    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.25);
-    --shadow-md: 0 6px 18px rgba(0, 0, 0, 0.35);
-    --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.45);
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.2);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.28);
+    --shadow-lg: 0 10px 26px rgba(0, 0, 0, 0.34);
   }
 }
 
@@ -121,7 +123,7 @@
   --c-sunken: #292b33;
   --c-ink: #f2f2f0;
   --c-ink-2: #c2c4cb;
-  --c-ink-3: #8f929c;
+  --c-ink-3: #a3a6ac;
   --c-rule: #2b2d35;
   --c-rule-2: #3c3f49;
 
@@ -139,9 +141,9 @@
   --c-void: #8f929c;
   --c-void-bg: #24262d;
 
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.25);
-  --shadow-md: 0 6px 18px rgba(0, 0, 0, 0.35);
-  --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.45);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.2);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.28);
+  --shadow-lg: 0 10px 26px rgba(0, 0, 0, 0.34);
 }
 
 @layer base {

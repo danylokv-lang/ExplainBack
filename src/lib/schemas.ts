@@ -80,6 +80,7 @@ export const DIAGNOSIS_SCHEMA = {
     "coverage",
     "depth",
     "verdict",
+    "nextStep",
     "nodeStatuses",
     "gaps",
     "repair",
@@ -99,6 +100,11 @@ export const DIAGNOSIS_SCHEMA = {
       type: "string",
       description:
         "One line addressed to the student. Concrete, with no praise for its own sake.",
+    },
+    nextStep: {
+      type: "string",
+      description:
+        "One short imperative sentence naming the single most important thing to fix next, built around the highest-severity gap: 'Understand <concept>'s role in <mechanism>.' Names a concept from the map, not a vague instruction like 'review the material'.",
     },
     nodeStatuses: {
       type: "array",

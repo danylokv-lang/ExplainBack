@@ -3,25 +3,23 @@ import Link from "next/link";
 import { CardReview } from "@/components/CardReview";
 import { currentUser } from "@/lib/auth";
 import { listCards, listDueCards } from "@/lib/db";
-import { formatDate, plural } from "@/lib/plural";
-import { GAP_META } from "@/lib/types";
+import { dictionary, formatDate, getLocale } from "@/lib/i18n";
 
 export const metadata: Metadata = { title: "Study cards" };
 
 export default async function CardsPage() {
   const user = (await currentUser())!;
+  const locale = await getLocale();
+  const t = dictionary(locale);
   const due = await listDueCards(user.id);
   const all = await listCards(user.id);
 
   return (
     <div className="space-y-12 py-12">
       <header>
-        <p className="label">Study cards</p>
-        <h1 className="display mt-2 text-4xl">Written From Your Own Gaps</h1>
-        <p className="prose-measure mt-4 text-lg leading-relaxed text-ink-2">
-          Every card comes from something a diagnosis found in your explanation. None of
-          them can be answered by reciting a definition — that is the point.
-        </p>
+        <p className="label">{t.nav.cards}</p>
+        <h1 className="display mt-2 text-4xl">{t.cards.heading}</h1>
+        <p className="prose-measure mt-4 text-lg leading-relaxed text-ink-2">{t.cards.body}</p>
       </header>
 
       <CardReview cards={due} />
@@ -30,11 +28,9 @@ export default async function CardsPage() {
         <section aria-labelledby="deck-heading">
           <div className="flex flex-wrap items-baseline justify-between gap-4">
             <h2 id="deck-heading" className="display text-2xl">
-              The Whole Deck
+              {t.cards.wholeDeck}
             </h2>
-            <p className="text-sm tabular-nums text-ink-3">
-              {all.length} {plural(all.length, "card")}
-            </p>
+            <p className="text-sm tabular-nums text-ink-3">{t.cards.cardCount(all.length)}</p>
           </div>
           <ul className="mt-5 divide-y divide-rule overflow-hidden rounded-2xl border border-rule bg-surface shadow-sm">
             {all.map((card) => (
@@ -43,11 +39,11 @@ export default async function CardsPage() {
                   <span>{card.topic}</span>
                   {card.gapType && (
                     <span className="chip code bg-accent-bg text-accent">
-                      {GAP_META[card.gapType].code}
+                      {t.gapTypes[card.gapType].label}
                     </span>
                   )}
                   <span className="ml-auto tabular-nums">
-                    Due {formatDate(card.dueAt)} · {card.reps} {plural(card.reps, "review")}
+                    {t.cards.due(formatDate(locale, card.dueAt), card.reps)}
                   </span>
                 </div>
                 <p className="mt-2 leading-relaxed text-ink">{card.front}</p>
@@ -59,13 +55,9 @@ export default async function CardsPage() {
 
       {all.length === 0 && (
         <div className="panel p-6">
-          <p className="prose-measure leading-relaxed text-ink-2">
-            Your deck is empty. Finish a session and choose{" "}
-            <span className="font-medium text-ink">Generate Study Cards</span> on the
-            diagnosis.
-          </p>
+          <p className="prose-measure leading-relaxed text-ink-2">{t.cards.emptyBody}</p>
           <Link href="/app/practice" className="btn btn-primary mt-5">
-            Start a Session
+            {t.cards.startSession}
           </Link>
         </div>
       )}

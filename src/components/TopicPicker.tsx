@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { LanguageToggle } from "./LanguageToggle";
+import { useLocale } from "./LocaleProvider";
 import type { PresetTopic } from "@/lib/store";
 
 interface Props {
@@ -11,19 +13,25 @@ interface Props {
 }
 
 export function TopicPicker({ presets, pendingTopic, error, onPick }: Props) {
+  const { t } = useLocale();
   const [custom, setCustom] = useState("");
   const busy = pendingTopic !== null;
 
   return (
     <section aria-labelledby="topic-heading" className="py-12">
-      <p className="label">Step 0 — pick a topic</p>
-      <h1 id="topic-heading" className="display mt-2 max-w-2xl text-4xl sm:text-5xl">
-        Choose Something You Believe You Understand
-      </h1>
-      <p className="prose-measure mt-4 text-lg leading-relaxed text-ink-2">
-        You will explain it from memory. No notes, no searching. That is usually the moment
-        it turns out the clarity was a feeling rather than a grasp.
-      </p>
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <p className="label">{t.topicPicker.step}</p>
+          <h1 id="topic-heading" className="display mt-2 max-w-2xl text-4xl sm:text-5xl">
+            {t.topicPicker.heading}
+          </h1>
+        </div>
+        <div className="shrink-0">
+          <p className="label mb-1.5 text-right">{t.topicPicker.responseLanguage}</p>
+          <LanguageToggle />
+        </div>
+      </div>
+      <p className="prose-measure mt-4 text-lg leading-relaxed text-ink-2">{t.topicPicker.body}</p>
 
       {error && (
         <p
@@ -50,7 +58,7 @@ export function TopicPicker({ presets, pendingTopic, error, onPick }: Props) {
                 <span className="mt-3 leading-relaxed text-ink-2">{preset.brief}</span>
                 <span className="mt-6 flex w-full items-center justify-between border-t border-rule pt-4 text-sm text-ink-3">
                   <span className="tabular-nums">
-                    {preset.nodeCount} concepts · {preset.edgeCount} links
+                    {t.topicPicker.conceptsLinks(preset.nodeCount, preset.edgeCount)}
                   </span>
                   <span
                     aria-hidden="true"
@@ -74,7 +82,7 @@ export function TopicPicker({ presets, pendingTopic, error, onPick }: Props) {
         }}
       >
         <label htmlFor="custom-topic" className="label">
-          Or bring your own topic
+          {t.topicPicker.orOwnTopic}
         </label>
         <div className="mt-2 flex flex-col gap-3 sm:flex-row">
           <input
@@ -86,7 +94,7 @@ export function TopicPicker({ presets, pendingTopic, error, onPick }: Props) {
             maxLength={120}
             autoComplete="off"
             spellCheck={false}
-            placeholder="Photosynthesis, hash tables, the second law of thermodynamics…"
+            placeholder={t.topicPicker.placeholder}
             className="field min-w-0 flex-1"
           />
           <button
@@ -94,13 +102,10 @@ export function TopicPicker({ presets, pendingTopic, error, onPick }: Props) {
             className="btn btn-primary shrink-0"
             disabled={busy || custom.trim().length < 2}
           >
-            {pendingTopic === custom.trim() ? "Building the Map…" : "Build the Map"}
+            {pendingTopic === custom.trim() ? t.topicPicker.building : t.topicPicker.buildMap}
           </button>
         </div>
-        <p className="prose-measure mt-3 text-[0.9375rem] text-ink-3">
-          A new topic needs its reference map built first, which takes a few seconds. The
-          four above are already built.
-        </p>
+        <p className="prose-measure mt-3 text-[0.9375rem] text-ink-3">{t.topicPicker.mapHint}</p>
       </form>
     </section>
   );

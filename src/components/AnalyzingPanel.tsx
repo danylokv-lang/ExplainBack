@@ -1,29 +1,25 @@
 "use client";
 
 import { useEffect, useState } from "react";
-
-const STEPS = [
-  "Reading your explanation literally",
-  "Matching it against the reference map",
-  "Classifying the kinds of gap",
-  "Writing the Socratic questions",
-];
+import { useLocale } from "./LocaleProvider";
 
 export function AnalyzingPanel({ topic }: { topic: string }) {
+  const { t } = useLocale();
+  const steps = t.analyzing.steps;
   const [step, setStep] = useState(0);
 
   useEffect(() => {
     const timer = window.setInterval(() => {
-      setStep((prev) => Math.min(prev + 1, STEPS.length - 1));
+      setStep((prev) => Math.min(prev + 1, steps.length - 1));
     }, 1700);
     return () => window.clearInterval(timer);
-  }, []);
+  }, [steps.length]);
 
   return (
     <section aria-labelledby="analyzing-heading" aria-busy="true" className="py-24">
-      <p className="label">Step 2 — diagnosis</p>
+      <p className="label">{t.analyzing.step}</p>
       <h1 id="analyzing-heading" className="display mt-2 text-4xl">
-        Diagnosing…
+        {t.analyzing.heading}
       </h1>
       <p className="mt-3 text-lg text-ink-2">{topic}</p>
 
@@ -32,7 +28,7 @@ export function AnalyzingPanel({ topic }: { topic: string }) {
       </div>
 
       <ol className="mt-9 space-y-3.5" aria-live="polite">
-        {STEPS.map((label, index) => (
+        {steps.map((label, index) => (
           <li
             key={label}
             className={`flex items-baseline gap-3 transition-colors duration-200 ${

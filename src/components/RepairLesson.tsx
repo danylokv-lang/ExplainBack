@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { useLocale } from "./LocaleProvider";
 import type { Gap, RepairQuestion } from "@/lib/types";
-import { GAP_META } from "@/lib/types";
 
 interface Props {
   questions: RepairQuestion[];
@@ -10,19 +10,17 @@ interface Props {
 }
 
 export function RepairLesson({ questions, gaps }: Props) {
+  const { t } = useLocale();
   const [open, setOpen] = useState<Record<string, boolean>>({});
   if (questions.length === 0) return null;
 
   return (
     <section aria-labelledby="repair-heading">
-      <p className="label">Step 3 — repair lesson</p>
+      <p className="label">{t.diagnosis.repair.step}</p>
       <h2 id="repair-heading" className="display mt-2 text-3xl">
-        Questions, Not a Lecture
+        {t.diagnosis.repair.heading}
       </h2>
-      <p className="prose-measure mt-3 leading-relaxed text-ink-2">
-        The answer is left out on purpose. Each question is an edge case that makes the gap
-        obvious. Sit with it before you open the hint.
-      </p>
+      <p className="prose-measure mt-3 leading-relaxed text-ink-2">{t.diagnosis.repair.body}</p>
 
       <ol className="mt-7 space-y-4">
         {questions.map((question, index) => {
@@ -34,7 +32,7 @@ export function RepairLesson({ questions, gaps }: Props) {
             <li key={question.id} className="panel p-5 sm:p-6">
               <div className="flex items-baseline gap-3">
                 <span className="code text-ink-3">{String(index + 1).padStart(2, "0")}</span>
-                {gap && <span className="text-sm text-ink-3">{GAP_META[gap.type].label}</span>}
+                {gap && <span className="text-sm text-ink-3">{t.gapTypes[gap.type].label}</span>}
               </div>
 
               <p className="mt-3 max-w-3xl text-xl font-medium leading-[1.45] text-ink">
@@ -50,7 +48,7 @@ export function RepairLesson({ questions, gaps }: Props) {
                   setOpen((prev) => ({ ...prev, [question.id]: !prev[question.id] }))
                 }
               >
-                {isOpen ? "Hide Hint" : "Show Hint"}
+                {isOpen ? t.diagnosis.repair.hideHint : t.diagnosis.repair.showHint}
               </button>
 
               <p

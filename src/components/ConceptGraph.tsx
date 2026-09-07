@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useLocale } from "./LocaleProvider";
 import { edgeKey, edgePath, layoutGraph, LINE_H } from "@/lib/layout";
 import type { ConceptMap, Gap, NodeStatus, NodeStatusKind } from "@/lib/types";
-import { STATUS_META } from "@/lib/types";
 
 const NODE_STYLE: Record<
   NodeStatusKind,
@@ -70,6 +70,7 @@ export function ConceptGraph({
   onSelectNode,
   neutral,
 }: Props) {
+  const { t } = useLocale();
   const graph = useMemo(() => layoutGraph(map.nodes, map.edges), [map]);
   const statusById = useMemo(
     () => new Map(statuses.map((s) => [s.nodeId, s.status])),
@@ -79,6 +80,13 @@ export function ConceptGraph({
     () => new Map(graph.nodes.map((p) => [p.node.id, p])),
     [graph],
   );
+
+  const RELATION_LABELS: [string, string][] = [
+    ["causes", t.diagnosis.graph.relations.causes],
+    ["produces", t.diagnosis.graph.relations.produces],
+    ["requires", t.diagnosis.graph.relations.requires],
+    ["enables", t.diagnosis.graph.relations.enables],
+  ];
 
   // The graph fits the panel width but stops shrinking at a floor;
   // below that it scrolls horizontally instead of becoming unreadable.
@@ -113,7 +121,7 @@ export function ConceptGraph({
           height={graph.height * scale}
           viewBox={`0 0 ${graph.width} ${graph.height}`}
           role="img"
-          aria-label={`Concept map for ${map.topic}, with the diagnosed state of every concept`}
+          aria-label={`${map.topic} — ${map.brief}`}
           className="block"
         >
           <defs>
@@ -191,9 +199,7 @@ export function ConceptGraph({
                 role="button"
                 tabIndex={0}
                 aria-label={
-                  neutral
-                    ? placed.node.label
-                    : `${placed.node.label}: ${STATUS_META[status].label}`
+                  neutral ? placed.node.label : `${placed.node.label}: ${t.statuses[status]}`
                 }
                 aria-pressed={isSelected}
                 className="cursor-pointer"
@@ -257,9 +263,10 @@ export function ConceptGraph({
                     fill={style.stroke}
                     fontSize="11.5"
                     letterSpacing="0.06em"
-                    fontFamily="var(--font-mono)"
+                    fontFamily="var(--font-sans)"
+                    fontWeight={600}
                   >
-                    {STATUS_META[status].label.toUpperCase()}
+                    {t.statuses[status].toUpperCase()}
                   </text>
                 )}
               </g>
@@ -269,27 +276,20 @@ export function ConceptGraph({
       </div>
 
       {overflows && (
-        <p className="mt-3 text-sm text-ink-3">
-          The chain is wider than the panel — scroll sideways to see the rest.
-        </p>
+        <p className="mt-3 text-sm text-ink-3">{t.diagnosis.graph.overflowHint}</p>
       )}
 
       {flaggedEdgeInfo && (
         <p className="mt-4 border-l-2 border-bad pl-3.5 leading-relaxed text-ink-2">
-          <span className="mr-2 font-medium text-bad">Link</span>
+          <span className="mr-2 font-medium text-bad">{t.diagnosis.graph.link}</span>
           {nodeLabel(map, flaggedEdgeInfo.from)} → {nodeLabel(map, flaggedEdgeInfo.to)}:{" "}
           {flaggedEdgeInfo.label}
         </p>
       )}
 
       <figcaption className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-rule pt-3">
-        <span className="text-sm text-ink-3">Relation</span>
-        {[
-          ["causes", "brings about"],
-          ["produces", "yields"],
-          ["requires", "impossible without"],
-          ["enables", "makes possible"],
-        ].map(([relation, label]) => (
+        <span className="text-sm text-ink-3">{t.diagnosis.graph.relationLabel}</span>
+        {RELATION_LABELS.map(([relation, label]) => (
           <span key={relation} className="flex items-center gap-2 text-sm text-ink-2">
             <svg width="26" height="8" aria-hidden="true">
               <line
@@ -309,7 +309,6 @@ export function ConceptGraph({
     </figure>
   );
 }
-
 
 function nodeLabel(map: ConceptMap, id: string): string {
   return map.nodes.find((n) => n.id === id)?.label ?? id;

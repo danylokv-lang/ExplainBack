@@ -1,7 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useRef } from "react";
-import { plural } from "@/lib/plural";
+import { LanguageToggle } from "./LanguageToggle";
+import { useLocale } from "./LocaleProvider";
 import { useSpeech } from "@/lib/useSpeech";
 import type { RepairQuestion } from "@/lib/types";
 
@@ -34,6 +35,7 @@ export function ExplainPanel({
   onSubmit,
   onBack,
 }: Props) {
+  const { t } = useLocale();
   const areaRef = useRef<HTMLTextAreaElement>(null);
   const appendSpeech = useCallback(
     (chunk: string) => {
@@ -61,21 +63,19 @@ export function ExplainPanel({
   return (
     <section aria-labelledby="explain-heading" className="py-12">
       <p className="label">
-        {isRetry ? `Step 4 — attempt ${attemptIndex}` : "Step 1 — your explanation"}
+        {isRetry ? t.explainPanel.stepRetry(attemptIndex) : t.explainPanel.stepFirst}
       </p>
       <h1 id="explain-heading" className="display mt-2 text-4xl sm:text-5xl">
-        {isRetry ? "Explain It Again" : topic}
+        {isRetry ? t.explainPanel.retryHeading : topic}
       </h1>
       <p className="prose-measure mt-4 text-lg leading-relaxed text-ink-2">
-        {isRetry
-          ? "Same topic, second pass. Keep the repair questions in mind — we score this against your first attempt."
-          : brief}
+        {isRetry ? t.explainPanel.retryBody : brief}
       </p>
 
       <div className="mt-9 grid gap-10 lg:grid-cols-[minmax(0,1fr)_280px]">
         <div className="min-w-0">
           <label htmlFor="explanation" className="label">
-            Write it in your own words
+            {t.explainPanel.writeInWords}
           </label>
           <textarea
             id="explanation"
@@ -87,7 +87,7 @@ export function ExplainPanel({
             maxLength={6000}
             spellCheck
             autoComplete="off"
-            placeholder="Pretend you are explaining this to a friend who has never met the topic. Start anywhere…"
+            placeholder={t.explainPanel.placeholder}
             className="panel mt-2 block w-full resize-y p-5 text-[1.0625rem] leading-[1.7] text-ink placeholder:text-ink-3"
           />
 
@@ -104,7 +104,7 @@ export function ExplainPanel({
 
           <div className="mt-5 flex flex-wrap items-center gap-3">
             <button type="button" className="btn btn-primary" onClick={onSubmit} disabled={!ready}>
-              {submitting ? "Diagnosing…" : "Find My Gaps"}
+              {submitting ? t.explainPanel.diagnosing : t.explainPanel.findMyGaps}
             </button>
 
             {speech.supported && (
@@ -120,7 +120,7 @@ export function ExplainPanel({
                     speech.recording ? "anim-rec bg-bad" : "bg-ink-3"
                   }`}
                 />
-                {speech.recording ? "Stop Recording" : "Explain Out Loud"}
+                {speech.recording ? t.explainPanel.stopRecording : t.explainPanel.explainOutLoud}
               </button>
             )}
 
@@ -133,16 +133,16 @@ export function ExplainPanel({
                   areaRef.current?.focus();
                 }}
               >
-                Load a Sample Answer
+                {t.explainPanel.loadSample}
               </button>
             )}
           </div>
 
           <p className="mt-3 text-sm tabular-nums text-ink-3" aria-live="polite">
-            {words} {plural(words, "word")}
+            {t.explainPanel.wordsCount(words)}
             {chars < MIN_CHARS
-              ? ` · ${MIN_CHARS - chars} more ${plural(MIN_CHARS - chars, "character")} before we can diagnose`
-              : " · ready to diagnose"}
+              ? ` · ${t.explainPanel.moreCharsNeeded(MIN_CHARS - chars)}`
+              : ` · ${t.explainPanel.readyToDiagnose}`}
           </p>
 
           {error && (
@@ -156,9 +156,16 @@ export function ExplainPanel({
         </div>
 
         <aside className="space-y-7 lg:border-l lg:border-rule lg:pl-7">
+          <div>
+            <p className="label mb-1.5">{t.topicPicker.responseLanguage}</p>
+            <LanguageToggle className="w-full" />
+          </div>
+
           {questions && questions.length > 0 && (
             <div>
-              <h2 className="text-[0.9375rem] font-medium text-ink">Your repair questions</h2>
+              <h2 className="text-[0.9375rem] font-medium text-ink">
+                {t.explainPanel.repairQuestionsHeading}
+              </h2>
               <ul className="mt-3 space-y-3.5">
                 {questions.map((question) => (
                   <li
@@ -173,16 +180,16 @@ export function ExplainPanel({
           )}
 
           <div>
-            <h2 className="text-[0.9375rem] font-medium text-ink">House rules</h2>
+            <h2 className="text-[0.9375rem] font-medium text-ink">{t.explainPanel.houseRules}</h2>
             <ul className="mt-3 space-y-2.5 text-[0.9375rem] leading-relaxed text-ink-2">
-              <li>No searching, no notes.</li>
-              <li>Explain how it works, don&rsquo;t list the terms.</li>
-              <li>If you get stuck, say so — that is diagnostic too.</li>
+              <li>{t.explainPanel.rule1}</li>
+              <li>{t.explainPanel.rule2}</li>
+              <li>{t.explainPanel.rule3}</li>
             </ul>
           </div>
 
           <button type="button" className="btn btn-ghost w-full" onClick={onBack}>
-            Pick Another Topic
+            {t.explainPanel.pickAnotherTopic}
           </button>
         </aside>
       </div>

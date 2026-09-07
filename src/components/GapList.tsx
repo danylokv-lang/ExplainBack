@@ -1,12 +1,12 @@
 "use client";
 
+import { useLocale } from "./LocaleProvider";
 import type { Gap, Severity } from "@/lib/types";
-import { GAP_META } from "@/lib/types";
 
-const SEVERITY: Record<Severity, { label: string; chip: string; rule: string }> = {
-  high: { label: "Critical", chip: "text-bad border-bad/50 bg-bad-bg", rule: "border-l-bad" },
-  medium: { label: "Material", chip: "text-warn border-warn/50 bg-warn-bg", rule: "border-l-warn" },
-  low: { label: "Minor", chip: "text-void border-void/50 bg-void-bg", rule: "border-l-void" },
+const SEVERITY: Record<Severity, { chip: string; rule: string }> = {
+  high: { chip: "text-bad border-bad/50 bg-bad-bg", rule: "border-l-bad" },
+  medium: { chip: "text-warn border-warn/50 bg-warn-bg", rule: "border-l-warn" },
+  low: { chip: "text-void border-void/50 bg-void-bg", rule: "border-l-void" },
 };
 
 interface Props {
@@ -17,14 +17,13 @@ interface Props {
 }
 
 export function GapList({ gaps, activeGapId, onSelect, columns = 2 }: Props) {
+  const { t } = useLocale();
+
   if (gaps.length === 0) {
     return (
       <div className="panel border-l-[3px] border-l-ok p-5">
-        <p className="text-[0.9375rem] font-medium text-ok">No gaps found</p>
-        <p className="prose-measure mt-2 leading-relaxed text-ink-2">
-          The mechanism holds at every node of the map. Take a harder topic, or explain this
-          one again without using a single technical term.
-        </p>
+        <p className="text-[0.9375rem] font-medium text-ok">{t.diagnosis.gapsSection.noGapsHeading}</p>
+        <p className="prose-measure mt-2 leading-relaxed text-ink-2">{t.diagnosis.gapsSection.noGapsBody}</p>
       </div>
     );
   }
@@ -32,7 +31,7 @@ export function GapList({ gaps, activeGapId, onSelect, columns = 2 }: Props) {
   return (
     <ul className={columns === 2 ? "grid gap-4 lg:grid-cols-2" : "grid gap-4"}>
       {gaps.map((gap) => {
-        const meta = GAP_META[gap.type];
+        const meta = t.gapTypes[gap.type];
         const severity = SEVERITY[gap.severity];
         const isActive = activeGapId === gap.id;
 
@@ -49,9 +48,8 @@ export function GapList({ gaps, activeGapId, onSelect, columns = 2 }: Props) {
               }`}
             >
               <span className="flex flex-wrap items-center gap-x-3 gap-y-2">
-                <span className={`chip code border ${severity.chip}`}>{meta.code}</span>
-                <span className="text-sm text-ink-2">{meta.label}</span>
-                <span className="ml-auto text-sm text-ink-3">{severity.label}</span>
+                <span className={`chip ${severity.chip}`}>{meta.label}</span>
+                <span className="ml-auto text-sm text-ink-3">{t.severity[gap.severity]}</span>
               </span>
 
               <span className="mt-3 block text-lg font-medium leading-snug text-ink">
@@ -64,7 +62,10 @@ export function GapList({ gaps, activeGapId, onSelect, columns = 2 }: Props) {
                 </span>
               )}
 
-              <span className="mt-3 block leading-relaxed text-ink-2">{gap.why}</span>
+              <span className="mt-3 block text-sm font-medium text-ink-3">
+                {t.diagnosis.gapsSection.whyFlagged}
+              </span>
+              <span className="mt-1 block leading-relaxed text-ink-2">{gap.why}</span>
             </button>
           </li>
         );

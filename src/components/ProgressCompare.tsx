@@ -1,8 +1,7 @@
 "use client";
 
-import { plural } from "@/lib/plural";
+import { useLocale } from "./LocaleProvider";
 import type { Attempt } from "@/lib/types";
-import { GAP_META } from "@/lib/types";
 
 interface Props {
   before: Attempt;
@@ -31,6 +30,7 @@ function Delta({ label, from, to }: { label: string; from: number; to: number })
 }
 
 export function ProgressCompare({ before, after }: Props) {
+  const { t } = useLocale();
   const resolvedIds = new Set(after.diagnosis.resolvedGapIds);
   const resolved = before.diagnosis.gaps.filter((gap) => resolvedIds.has(gap.id));
   const open = before.diagnosis.gaps.filter((gap) => !resolvedIds.has(gap.id));
@@ -41,18 +41,24 @@ export function ProgressCompare({ before, after }: Props) {
       aria-labelledby="compare-heading"
       className="panel border-l-[3px] border-l-accent p-5 sm:p-6"
     >
-      <p className="label">
-        Attempt {before.index} → attempt {after.index}
-      </p>
+      <p className="label">{t.diagnosis.compare.attemptArrow(before.index, after.index)}</p>
       <h2 id="compare-heading" className="display mt-2 text-3xl">
         {total === 0
-          ? "Attempt Comparison"
-          : `${resolved.length} of ${total} ${plural(total, "Gap")} Closed`}
+          ? t.diagnosis.compare.comparisonTitle
+          : t.diagnosis.compare.gapsClosedTitle(resolved.length, total)}
       </h2>
 
       <div className="mt-6 grid gap-6 sm:grid-cols-2">
-        <Delta label="Map coverage" from={before.diagnosis.coverage} to={after.diagnosis.coverage} />
-        <Delta label="Mechanism depth" from={before.diagnosis.depth} to={after.diagnosis.depth} />
+        <Delta
+          label={t.diagnosis.compare.conceptCoverage}
+          from={before.diagnosis.coverage}
+          to={after.diagnosis.coverage}
+        />
+        <Delta
+          label={t.diagnosis.compare.reasoningDepth}
+          from={before.diagnosis.depth}
+          to={after.diagnosis.depth}
+        />
       </div>
 
       {total > 0 && (
@@ -63,7 +69,7 @@ export function ProgressCompare({ before, after }: Props) {
                 ✓
               </span>
               <span className="text-ink-3 line-through">{gap.title}</span>
-              <span className="code ml-auto shrink-0 text-ink-3">{GAP_META[gap.type].code}</span>
+              <span className="ml-auto shrink-0 text-sm text-ink-3">{t.gapTypes[gap.type].label}</span>
             </li>
           ))}
           {open.map((gap) => (
@@ -72,7 +78,7 @@ export function ProgressCompare({ before, after }: Props) {
                 ○
               </span>
               <span className="text-ink">{gap.title}</span>
-              <span className="code ml-auto shrink-0 text-ink-3">{GAP_META[gap.type].code}</span>
+              <span className="ml-auto shrink-0 text-sm text-ink-3">{t.gapTypes[gap.type].label}</span>
             </li>
           ))}
         </ul>

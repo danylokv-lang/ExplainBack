@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { AnalyzingPanel } from "./AnalyzingPanel";
 import { DiagnosisView } from "./DiagnosisView";
 import { ExplainPanel } from "./ExplainPanel";
+import { useLocale } from "./LocaleProvider";
 import { TopicPicker } from "./TopicPicker";
 import { getStoredLanguage } from "@/lib/language-client";
 import type { PresetTopic } from "@/lib/store";
@@ -18,6 +19,7 @@ export function PracticeFlow({
   presets: PresetTopic[];
   initialTopic?: string;
 }) {
+  const { t } = useLocale();
   const [stage, setStage] = useState<Stage>("topic");
   const [map, setMap] = useState<ConceptMap | null>(null);
   const [runId, setRunId] = useState<number | null>(null);
@@ -28,41 +30,44 @@ export function PracticeFlow({
 
   const preset = presets.find((candidate) => candidate.topic === map?.topic);
 
-  const pickTopic = useCallback(async (topic: string) => {
-    setPendingTopic(topic);
-    setError(null);
-    try {
-      const response = await fetch("/api/concept-map", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ topic, language: getStoredLanguage() }),
-      });
-      const data = (await response.json()) as { map?: ConceptMap; error?: string };
-      if (!response.ok || !data.map) {
-        setError(data.error ?? "Could not build the concept map.");
-        return;
+  const pickTopic = useCallback(
+    async (topic: string) => {
+      setPendingTopic(topic);
+      setError(null);
+      try {
+        const response = await fetch("/api/concept-map", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ topic, language: getStoredLanguage() }),
+        });
+        const data = (await response.json()) as { map?: ConceptMap; error?: string };
+        if (!response.ok || !data.map) {
+          setError(data.error ?? "Could not build the concept map.");
+          return;
+        }
+
+        // The run is opened up front so every attempt lands in history even if
+        // the learner closes the tab midway through the loop.
+        const runResponse = await fetch("/api/runs", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ map: data.map }),
+        });
+        const runData = (await runResponse.json()) as { runId?: number };
+
+        setMap(data.map);
+        setRunId(runData.runId ?? null);
+        setAttempts([]);
+        setDraft("");
+        setStage("explain");
+      } catch {
+        setError(t.diagnosis.cardsCta.errorNetwork);
+      } finally {
+        setPendingTopic(null);
       }
-
-      // The run is opened up front so every attempt lands in history even if
-      // the learner closes the tab midway through the loop.
-      const runResponse = await fetch("/api/runs", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ map: data.map }),
-      });
-      const runData = (await runResponse.json()) as { runId?: number };
-
-      setMap(data.map);
-      setRunId(runData.runId ?? null);
-      setAttempts([]);
-      setDraft("");
-      setStage("explain");
-    } catch {
-      setError("Could not reach the server. Check your connection and try again.");
-    } finally {
-      setPendingTopic(null);
-    }
-  }, []);
+    },
+    [t],
+  );
 
   useEffect(() => {
     // A deep link is the learner's own link into their own account, so any
@@ -118,10 +123,10 @@ export function PracticeFlow({
       ]);
       setStage("result");
     } catch {
-      setError("Could not reach the server. Check your connection and try again.");
+      setError(t.diagnosis.cardsCta.errorNetwork);
       setStage("explain");
     }
-  }, [attempts, draft, map, runId]);
+  }, [attempts, draft, map, runId, t]);
 
   const reset = useCallback(() => {
     setStage("topic");

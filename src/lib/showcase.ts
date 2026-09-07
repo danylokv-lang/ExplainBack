@@ -13,6 +13,7 @@ export const SHOWCASE_DIAGNOSIS: Diagnosis = {
   depth: 18,
   verdict:
     "You know every term. Where the ATP actually comes from never appears once.",
+  nextStep: "Understand oxygen's role at the end of the electron transport chain.",
   nodeStatuses: [
     { nodeId: "glucose", status: "shallow", evidence: "the cell gets energy from glucose" },
     { nodeId: "glycolysis", status: "missing", evidence: "" },

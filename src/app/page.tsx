@@ -57,7 +57,7 @@ export default function LandingPage() {
         <section className="mx-auto w-full max-w-6xl px-5 pb-20 pt-16 sm:px-8 sm:pt-24">
           <div className="grid items-start gap-14 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:gap-16">
             <div>
-              <p className="text-sm text-ink-3">The Feynman technique, instrumented</p>
+              <p className="text-sm text-ink-3">Turn Your Explanation Into a Knowledge Diagnosis</p>
               <h1 className="display mt-5 text-[2.75rem] sm:text-6xl">
                 You don&rsquo;t ask the AI to explain it.
                 <br />
@@ -78,18 +78,19 @@ export default function LandingPage() {
                 </a>
               </div>
 
-              <dl className="mt-14 grid max-w-lg grid-cols-3 gap-6 border-t border-rule pt-7">
+              <ol className="mt-14 grid max-w-xl grid-cols-2 gap-x-6 gap-y-6 border-t border-rule pt-7 sm:grid-cols-4">
                 {[
-                  ["5", "kinds of gap"],
-                  ["4", "ready-made topics"],
-                  ["∞", "topics of your own"],
-                ].map(([value, label]) => (
-                  <div key={label}>
-                    <dd className="display text-4xl text-ink">{value}</dd>
-                    <dt className="mt-1 text-sm text-ink-3">{label}</dt>
-                  </div>
+                  "Explain from memory",
+                  "Find your gaps",
+                  "Repair one concept",
+                  "Explain it again",
+                ].map((step, index) => (
+                  <li key={step} className="flex flex-col gap-2">
+                    <span className="code text-ink-3">{String(index + 1).padStart(2, "0")}</span>
+                    <span className="text-sm font-medium leading-snug text-ink">{step}</span>
+                  </li>
                 ))}
-              </dl>
+              </ol>
             </div>
 
             {/* A real diagnosis of the sample answer that ships with the app. */}
@@ -118,6 +119,18 @@ export default function LandingPage() {
                   depth={SHOWCASE_DIAGNOSIS.depth}
                   gapCount={SHOWCASE_DIAGNOSIS.gaps.length}
                   compact
+                  formatSeconds={(ms) => (ms / 1000).toFixed(1)}
+                  labels={{
+                    conceptCoverage: "Concept coverage",
+                    conceptCoverageHint: "How many key ideas you mentioned.",
+                    reasoningDepth: "Reasoning depth",
+                    reasoningDepthHint: "How well you explained why and how they connect.",
+                    illusionHeading: (spread) => `The two numbers are ${spread} points apart.`,
+                    illusionBody:
+                      "You have the vocabulary and not the machinery. That gap is the illusion of understanding — a topic feels clear until you have to explain it.",
+                    gapsFound: (count) => `${count} gap${count === 1 ? "" : "s"} found`,
+                    analysedIn: (seconds) => `Analysed in ${seconds} s`,
+                  }}
                 />
               </div>
 
